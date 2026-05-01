@@ -1,16 +1,21 @@
 <section class="w-full">
-    <h2 class=" text-3xl leading-9 font-bold mb-4 border-l-6 border-indigo-500 pl-4">Trending Now</h2>
+    <h2 class="text-3xl leading-9 font-bold mb-4 border-l-6 border-indigo-500 pl-4">Trending Now</h2>
+
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         @for (movie of movies(); track movie.id) {
             <app-movie-card [movie]="movie"></app-movie-card>
         }
     </div>
+
+    @if (hasMorePages()) {
+        <div class="flex justify-center mt-4 pb-4">
+            <button
+                (click)="onLoadMore()"
+                [disabled]="isLoadingMore()"
+                class="px-8 py-3 rounded-full border border-outline text-sm leading-5 tracking-wide font-semibold hover hover:border-indigo-500 hover:text-indigo-500 transition-all duration-300 flex items-center gap-2">
+                {{ isLoadingMore() ? 'Loading...' : 'Load More Titles' }}
+                <span class="material-symbols-outlined">expand_more</span>
+            </button>
+        </div>
+    }
 </section>
-<!-- Load More Button -->
-<div class="flex justify-center mt-4 pb-4">
-    <button
-        class="px-8 py-3 rounded-full border border-outline text-sm leading-5 tracking-wide font-semibold hover hover:border-indigo-500 hover:text-indigo-500 transition-all duration-300 flex items-center gap-2">
-        Load More Titles
-        <span class="material-symbols-outlined ">expand_more</span>
-    </button>
-</div>

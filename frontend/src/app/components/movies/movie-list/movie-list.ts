@@ -1,6 +1,6 @@
-import { Component, computed, input } from '@angular/core';
-import { MovieCard } from "../movie-card/movie-card";
-import { TMDBMovieResponse } from '../../../interfaces/tmdb-movie.interface';
+import { Component, input, output } from '@angular/core';
+import { Movie } from '../../../interfaces/tmdb-movie.interface';
+import { MovieCard } from '../movie-card/movie-card';
 
 @Component({
   selector: 'app-movie-list',
@@ -9,7 +9,13 @@ import { TMDBMovieResponse } from '../../../interfaces/tmdb-movie.interface';
   styleUrl: './movie-list.css',
 })
 export class MovieList {
+  movies = input.required<Movie[]>();
+  isLoadingMore = input(false);
+  hasMorePages = input(true);
 
-  movieResponse = input.required<TMDBMovieResponse>();
-  movies = computed(() => this.movieResponse().results);
+  nextPage = output<void>();
+
+  onLoadMore() {
+    this.nextPage.emit();
+  }
 }

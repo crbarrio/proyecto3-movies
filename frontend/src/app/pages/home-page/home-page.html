@@ -40,8 +40,13 @@
 
 @if (movieResource.error()) {
   <div class="text-red-500 text-center mt-4">Failed to load movies. Please try again later.</div>
-} @else if (movieResource.isLoading()) {
+} @else if (movieResource.isLoading() && !loadedMovies().length) {
   <div class="text-gray-500 text-center mt-4">Loading movies...</div>
-} @else if (movieResource.hasValue()) {
-  <app-movie-list [movieResponse]="movieResource.value()"></app-movie-list>
+} @else {
+  <app-movie-list
+    [movies]="loadedMovies()"
+    [isLoadingMore]="movieResource.isLoading()"
+    [hasMorePages]="hasMorePages()"
+    (nextPage)="loadNextPage()">
+  </app-movie-list>
 }

@@ -13,8 +13,8 @@ export class MovieService {
   private tmdbApiUrl = environment.tmdbApiUrl;
   private tmdbAccessToken = environment.tmdbAccessToken;
 
-  getTrendingMovies(): Observable<TMDBMovieResponse> {
-    return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/trending/movie/week`, {
+  getTrendingMovies(page: number): Observable<TMDBMovieResponse> {
+    return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/trending/movie/week?page=${page}`, {
       headers: {
         Authorization: `Bearer ${this.tmdbAccessToken}`,
         'Content-Type': 'application/json;charset=utf-8',
