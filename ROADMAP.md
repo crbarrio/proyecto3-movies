@@ -73,3 +73,7 @@ Referencia de diseno:
 ## Calidad
 
 - [ ] Revisar accesibilidad.
+
+## Extras
+
+- [ ] Scroll Infinito
