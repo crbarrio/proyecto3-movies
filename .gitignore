@@ -1,0 +1,11 @@
+**/node_modules/
+**/dist/
+**/.angular/
+**/coverage/
+**/.env
+**/.env.*
+!**/.env.example
+npm-debug.log*
+yarn-error.log*
+Thumbs.db
+.DS_Store
