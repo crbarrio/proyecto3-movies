@@ -38,4 +38,10 @@
   </div>
 </section>
 
-<app-movie-list></app-movie-list>
+@if (movieResource.error()) {
+  <div class="text-red-500 text-center mt-4">Failed to load movies. Please try again later.</div>
+} @else if (movieResource.isLoading()) {
+  <div class="text-gray-500 text-center mt-4">Loading movies...</div>
+} @else if (movieResource.hasValue()) {
+  <app-movie-list [movieResponse]="movieResource.value()"></app-movie-list>
+}
