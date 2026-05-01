@@ -23,13 +23,18 @@ Referencia de diseno:
 ## API y datos
 
 - [ ] Explorar el funcionamiento de la API y revisar que datos expone.
+        https://developer.themoviedb.org/reference/person-details
+
 - [ ] Definir interfaces de datos.
+- [ ] Mapper para filtrar la respuesta de la api
 - [ ] Crear servicio de peliculas.
 - [ ] Mostrar primeros datos en la UI.
+- [ ] Paginar la petición y respuesta
 
 ## Diseno UI
 
 - [ ] Crear seccion Home.
+    - [ ] Función buscar
 - [ ] Crear detalle de pelicula.
 - [ ] Mostrar sinopsis, actores, direccion, fecha de estreno, trailer y datos relacionados.
 - [ ] Crear detalle de actor.

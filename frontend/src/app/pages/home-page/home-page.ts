@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { MovieList } from "../../components/movies/movie-list/movie-list";
+import { Component, inject } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { MovieList } from '../../components/movies/movie-list/movie-list';
+import { MovieService } from '../../services/movie.service';
 
 @Component({
   selector: 'app-home-page',
@@ -7,4 +9,10 @@ import { MovieList } from "../../components/movies/movie-list/movie-list";
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
 })
-export default class HomePage {}
+export default class HomePage {
+  movieService = inject(MovieService);
+
+  movieResource = rxResource({
+    stream: () => this.movieService.getTrendingMovies(),
+  });
+}
