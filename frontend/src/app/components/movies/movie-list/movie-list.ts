@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { MovieCard } from "../movie-card/movie-card";
+import { Component, input, output } from '@angular/core';
+import { Movie } from '../../../interfaces/tmdb-movie.interface';
+import { MovieCard } from '../movie-card/movie-card';
 
 @Component({
   selector: 'app-movie-list',
@@ -7,4 +8,14 @@ import { MovieCard } from "../movie-card/movie-card";
   templateUrl: './movie-list.html',
   styleUrl: './movie-list.css',
 })
-export class MovieList {}
+export class MovieList {
+  movies = input.required<Movie[]>();
+  isLoadingMore = input(false);
+  hasMorePages = input(true);
+
+  nextPage = output<void>();
+
+  onLoadMore() {
+    this.nextPage.emit();
+  }
+}

@@ -1,0 +1,28 @@
+<div class="genre-selector">
+  <button
+    (click)="selectGenre(null)"
+    class="genre-button"
+    [class.genre-button--active]="selectedGenre() === null"
+    [class.genre-button--inactive]="selectedGenre() !== null">
+    All
+  </button>
+
+  @for (genre of visibleGenres(); track genre.id) {
+    <button
+      (click)="selectGenre(genre.id)"
+      class="genre-button"
+      [class.genre-button--active]="selectedGenre() === genre.id"
+      [class.genre-button--inactive]="selectedGenre() !== genre.id">
+      {{ genre.name }}
+    </button>
+  }
+
+  @if (hasHiddenGenres) {
+    <button
+      type="button"
+      (click)="toggleExpanded()"
+      class="genre-button genre-button--toggle">
+      {{ isExpanded() ? 'Show less' : 'Show more' }}
+    </button>
+  }
+</div>
