@@ -3,10 +3,11 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieList } from '../../components/movies/movie-list/movie-list';
 import { Movie, TMDBMovieResponse } from '../../interfaces/tmdb-movie.interface';
 import { MovieService } from '../../services/movie.service';
+import { GenreSelector } from "../../components/movies/genre-selector/genre-selector";
 
 @Component({
   selector: 'app-home-page',
-  imports: [MovieList],
+  imports: [MovieList, GenreSelector],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
 })
@@ -14,11 +15,12 @@ export default class HomePage {
   private movieService = inject(MovieService);
 
   page = signal(1);
+  selectedGenreId = signal<number | null>(null);
   loadedMovies = signal<Movie[]>([]);
 
-  movieResource = rxResource<TMDBMovieResponse, number>({
-    params: () => this.page(),
-    stream: ({ params }) => this.movieService.getTrendingMovies(params),
+  movieResource = rxResource<TMDBMovieResponse, { page: number; genreId: number | null }>({
+    params: () => ({ page: this.page(), genreId: this.selectedGenreId() }),
+    stream: ({ params }) => this.movieService.getTrendingMovies(params.page, params.genreId),
   });
 
   totalPages = computed(() => this.movieResource.value()?.total_pages ?? 0);
@@ -51,5 +53,15 @@ export default class HomePage {
     }
 
     this.page.update((page) => page + 1);
+  }
+
+  onGenreSelected(genreId: number | null) {
+    if (this.selectedGenreId() === genreId) {
+      return;
+    }
+
+    this.selectedGenreId.set(genreId);
+    this.page.set(1);
+    this.loadedMovies.set([]);
   }
 }

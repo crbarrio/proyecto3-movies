@@ -13,15 +13,21 @@ export class MovieService {
   private tmdbApiUrl = environment.tmdbApiUrl;
   private tmdbAccessToken = environment.tmdbAccessToken;
 
-  getTrendingMovies(page: number): Observable<TMDBMovieResponse> {
-    return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/trending/movie/week?page=${page}`, {
+  getTrendingMovies(page: number, genreId: number | null): Observable<TMDBMovieResponse> {
+    const endpoint = genreId === null ? 'trending/movie/week' : 'discover/movie';
+    const params = new URLSearchParams({ page: String(page) });
+
+    if (genreId !== null) {
+      params.set('with_genres', String(genreId));
+    }
+
+    return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/${endpoint}?${params.toString()}`, {
       headers: {
         Authorization: `Bearer ${this.tmdbAccessToken}`,
         'Content-Type': 'application/json;charset=utf-8',
       },
     }).pipe(
       tap({
-        next: (response) => console.log('Trending movies fetched successfully:', response),
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('Unauthorized: Invalid TMDB access token.');

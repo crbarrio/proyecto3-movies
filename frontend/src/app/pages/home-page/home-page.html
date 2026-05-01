@@ -14,28 +14,7 @@
       placeholder="Search by title, director, or keyword..." type="text" />
   </div>
 
-  <div class="flex flex-wrap justify-center gap-3 w-full">
-    <button
-      class="px-6 py-2 rounded-full bg-indigo-500 text-indigo-950 text-sm leading-5 tracking-wide font-semibold border border-transparent shadow-md hover:bg-indigo-500 transition-colors">
-      All
-    </button>
-    <button
-      class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
-      Action
-    </button>
-    <button
-      class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
-      Comedy
-    </button>
-    <button
-      class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
-      Drama
-    </button>
-    <button
-      class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
-      Sci-Fi
-    </button>
-  </div>
+  <app-genre-selector (genreSelected)="onGenreSelected($event)"></app-genre-selector>
 </section>
 
 @if (movieResource.error()) {

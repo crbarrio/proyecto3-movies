@@ -1,21 +1,30 @@
-export const TMDB_GENRES_BY_ID: Record<number, string> = {
-  12: 'Adventure',
-  14: 'Fantasy',
-  16: 'Animation',
-  18: 'Drama',
-  27: 'Horror',
-  28: 'Action',
-  35: 'Comedy',
-  36: 'History',
-  37: 'Western',
-  53: 'Thriller',
-  80: 'Crime',
-  99: 'Documentary',
-  878: 'Science Fiction',
-  9648: 'Mystery',
-  10402: 'Music',
-  10749: 'Romance',
-  10751: 'Family',
-  10752: 'War',
-  10770: 'TV Movie',
-};
+export interface TMDBGenre {
+  id: number;
+  name: string;
+}
+
+export const TMDB_GENRES: readonly TMDBGenre[] = [
+  { id: 12, name: 'Adventure' },
+  { id: 14, name: 'Fantasy' },
+  { id: 16, name: 'Animation' },
+  { id: 18, name: 'Drama' },
+  { id: 27, name: 'Horror' },
+  { id: 28, name: 'Action' },
+  { id: 35, name: 'Comedy' },
+  { id: 36, name: 'History' },
+  { id: 37, name: 'Western' },
+  { id: 53, name: 'Thriller' },
+  { id: 80, name: 'Crime' },
+  { id: 99, name: 'Documentary' },
+  { id: 878, name: 'Science Fiction' },
+  { id: 9648, name: 'Mystery' },
+  { id: 10402, name: 'Music' },
+  { id: 10749, name: 'Romance' },
+  { id: 10751, name: 'Family' },
+  { id: 10752, name: 'War' },
+  { id: 10770, name: 'TV Movie' },
+];
+
+export const TMDB_GENRES_BY_ID: Record<number, string> = Object.fromEntries(
+  TMDB_GENRES.map((genre) => [genre.id, genre.name])
+) as Record<number, string>;
