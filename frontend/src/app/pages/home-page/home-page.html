@@ -1,0 +1,88 @@
+<section class="flex flex-col gap-10 items-center text-center max-w-3xl mx-auto w-full mt-8">
+    <div class="flex flex-col gap-3">
+      <h1 class="text-6xl leading-none tracking-tight font-extrabold">Discover your next favorite.</h1>
+      <p class="text-lg leading-7 font-normal">Explore thousands of movies tailored to your sophisticated taste.</p>
+    </div>
+
+
+    <div class="w-full relative group">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <span class="material-symbols-outlined text-outline">search</span>
+      </div>
+      <input
+        class="w-full border border-zinc-800 text-md leading-7 font-normal py-4 pl-12 pr-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 shadow-xl"
+        placeholder="Search by title, director, or keyword..."
+        type="text" />
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3 w-full">
+      <button
+        class="px-6 py-2 rounded-full bg-indigo-500 text-indigo-950 text-sm leading-5 tracking-wide font-semibold border border-transparent shadow-md hover:bg-indigo-500 transition-colors">
+        All
+      </button>
+      <button
+        class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
+        Action
+      </button>
+      <button
+        class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
+        Comedy
+      </button>
+      <button
+        class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
+        Drama
+      </button>
+      <button
+        class="px-6 py-2 rounded-full border border-zinc-600 text-sm leading-5 tracking-wide font-semibold shadow-sm hover:bg-neutral-800 hover:border-neutral-400 transition-colors">
+        Sci-Fi
+      </button>
+    </div>
+  </section>
+
+  
+  <section class="w-full">
+    <h2 class=" text-3xl leading-9 font-bold mb-4 border-l-6 border-indigo-500 pl-4">Trending Now</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <!-- Poster Card 1 -->
+      <div
+        class="group relative aspect-2/3 rounded-xl overflow-hidden shadow-lg border border-neutral-800 cursor-pointer">
+        <img alt="Sci-Fi Movie Poster"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          data-alt="A highly cinematic, dynamic movie poster featuring an abstract representation of a futuristic cityscape. The lighting is dramatic, heavily contrasting deep, immersive blacks with vivid, high-saturation teal neon accents. The mood is tense and explosive, perfectly capturing a high-budget sci-fi aesthetic. The composition emphasizes scale under a dark sky."
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGFqlF0FCS-5Sjv11l2QDe6dvpCBW09GhzSZ_imlqny6HDyCmEiYZuvW-02yBfFCTx-yFeQ-uqqSLuQUTf9GloaJwtHuj3wHGNst9hifANAMlcElrZYUkeI9EBJHc0yZ5iSUdFm39nL7V0fH4fTuQrvwY27-eUfJo3n_ztuH8sawZtd8qjQvv28gpNAOqczfKFhFxIhlcUuDATKs4T_NulC7Qoo0gPZsK-bv14wCm88ZRqD9HaEom91D2rgtw_pV01er_tz29z1Q" />
+        <!-- Gradient Overlay -->
+        <div
+          class="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+        </div>
+        <!-- Top Actions & Info -->
+        <div class="absolute top-3 w-full px-3 flex justify-between items-start z-10">
+          <div
+            class="bg-indigo-500/20 backdrop-blur-md border border-indigo-500/30 px-2 py-1 rounded text-indigo-500 leading-4 font-bold flex items-center gap-1 shadow-md">
+            <span class="material-symbols-outlined text-[14px] fill">star</span>
+            8.9
+          </div>
+          <button
+            class="w-8 h-8 rounded-full bg-zinc-900/50 backdrop-blur-md flex items-center justify-center hover:text-red-800 hover:bg-neutral-800 transition-colors shadow-md">
+            <span class="material-symbols-outlined">favorite</span>
+          </button>
+        </div>
+        <!-- Bottom Content -->
+        <div
+          class="absolute bottom-0 w-full p-4 flex flex-col gap-1 z-10 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+          <span class="text-indigo-500 leading-4 font-bold tracking-wider uppercase">Sci-Fi</span>
+          <h3 class="font-h3 text-h3 leading-tight drop-shadow-lg">Neon Genesis</h3>
+          <p class="font-body-md text-body-md-variant text-sm line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+            In a world bathed in synthetic light, one truth remains.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- Load More Button -->
+  <div class="flex justify-center mt-4 pb-4">
+    <button
+      class="px-8 py-3 rounded-full border border-outline text-sm leading-5 tracking-wide font-semibold hover hover:border-indigo-500 hover:text-indigo-500 transition-all duration-300 flex items-center gap-2">
+      Load More Titles
+      <span class="material-symbols-outlined ">expand_more</span>
+    </button>
+  </div>
