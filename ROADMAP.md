@@ -1,84 +1,91 @@
-# Movies Roadmap
+# ROADMAP COMPLETO — MOVIES (ANGULAR + NESTJS)
 
-Documento vivo para reflejar la evolucion del desarrollo del proyecto.
+---
 
-## Base del proyecto
+# OBJETIVO DEL PROYECTO
+
+Desarrollar una aplicación web moderna de películas utilizando:
+
+## Frontend
+- Angular 21
+- Signals
+- rxResource
+- Standalone Components
+
+## Backend
+- NestJS
+- Prisma ORM
+- PostgreSQL
+- JWT Authentication
+- Postman / Insomnia
+- DBeaver
+
+---
+
+# METODOLOGÍA
+
+Trabajar por vertical slices. Completa funcionalidades enteras de principio a fin desarrollando de forma paralela Frontend, Backend y DB.
+
+### Ejemplo
+1. Register/Login completo
+2. Favoritos completo
+3. Ratings completo
+
+---
+
+## [ ] FASE 1 — DISEÑO DEL PRODUCTO
+
+## MVP
+
+### Funcionalidades públicas
+- Ver películas trending
+- Buscar películas
+- Filtrar películas
+- Ver detalle de película
+- Ver detalle de actores
+
+### Funcionalidades para usuarios autenticados
+- Login
+- Register
+- Añadir favoritos
+- Quitar favoritos
+- Puntuar películas
+- Ver mis favoritas
+- Ver mis puntuaciones
+
+### Nice to have
+- Social login
+- Comentarios
+- Compartir listas
+
+---
+
+
+## [ ] FASE 2 - SETUP DEL PROYECTO
 
 - [X] Infraestructura base del proyecto: generar frontend Angular, backend NestJS y base de datos MySQL con Docker.
 - [X] Consolidar el monorepo Git del proyecto.
 
-## Layout y estilos globales
 
-- [X] Diseñar layout global y estilos base.
-- [X] Implementar navbar.
-- [X] Implementar footer.
-- [X] Evaluar uso de DaisyUI -> Descartado
-- [ ] Evaluar Angular CDK para modales.
-- [X] Definir uso de iconos. -> Material Icon con cdn
-- [X] Insertar logo de TMDB.
 
-Referencia de diseno:
-- https://stitch.withgoogle.com/projects/481083851166552973
+# DESARROLLO PARAELO DE FRONTEND Y BACKEND
 
-## API y datos
+## FRONTEND
 
-- [ ] Explorar el funcionamiento de la API y revisar que datos expone.
-        https://developer.themoviedb.org/reference/person-details
+- [ ] Layout y estilos globales
+- [ ] API y datos
+- [ ] Diseño UI
+- [ ] Navegación y búsqueda
+- [ ] Autenticación y usuario
+- [ ] Calidad
 
-- [ ] Definir interfaces de datos.
-- [ ] Mapper para filtrar la respuesta de la api
-- [ ] Crear servicio de peliculas.
-- [ ] Mostrar primeros datos en la UI.
-- [ ] Paginar la petición y respuesta
 
-## Diseno UI
+## BACKEND
 
-- [ ] Crear seccion Home.
-    - [ ] Función buscar
-- [ ] Crear detalle de pelicula.
-- [ ] Mostrar sinopsis, actores, direccion, fecha de estreno, trailer y datos relacionados.
-- [ ] Crear detalle de actor.
-- [ ] Mostrar fotografia, nombre, nacionalidad, peliculas en las que actua y peliculas que ha dirigido.
-- [ ] Crear detalle de director.
-- [ ] Mostrar fotografia, nombre, nacionalidad, peliculas en las que participa y peliculas en las que ha sido actor.
-- [ ] Emitir senal en la card para que el listado gestione la navegacion al detalle con `navigator`.
+- [ ] Diseño de la base de datos
+- [ ] Diseño de la API
+- [ ] Inicio del backend
+- [ ] Autenticación
+- [ ] Favoritos
+- [ ] Ratings
 
-## Navegacion y busqueda
-
-- [ ] Generar URL unica para cada pelicula, actor y productor.
-- [ ] Implementar cache de resultados de busqueda.
-- [ ] Definir expiracion de cache.
-- [ ] Preservar resultados despues de cambiar de URL.
-- [ ] Implementar debounce en la busqueda.
-
-## Backend y base de datos
-
-- [ ] Crear backend.
-- [ ] Reforzar conceptos de NestJS necesarios para el proyecto.
-- [ ] Crear base de datos MySQL.
-- [ ] Disenar tablas.
-- [ ] Enlazar frontend, backend y base de datos.
-
-## Autenticacion y usuario
-
-- [ ] Implementar sistema de autenticacion.
-- [ ] Crear modal de login.
-- [ ] Evaluar autenticacion con base de datos y Google.
-- [ ] Probar proteccion de vistas.
-- [ ] Crear seccion de favoritas.
-- [ ] Evaluar estadisticas de usuario.
-- [ ] Crear seccion de usuario protegida tras autenticacion.
-- [ ] Implementar CRUD de favoritos.
-- [ ] Implementar puntuaciones.
-- [ ] Mostrar opciones extra si el usuario esta autenticado.
-- [ ] Permitir marcar como favorita.
-- [ ] Permitir marcar como vista.
-- [ ] Permitir puntuar.
-
-## Calidad
-
-- [ ] Revisar accesibilidad.
-
-## Extras
-
-- [ ] Scroll Infinito
