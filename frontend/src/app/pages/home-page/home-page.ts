@@ -4,10 +4,11 @@ import { MovieList } from '../../components/movies/movie-list/movie-list';
 import { Movie, TMDBMovieResponse } from '../../interfaces/tmdb-movie.interface';
 import { MovieService } from '../../services/movie.service';
 import { GenreSelector } from "../../components/movies/genre-selector/genre-selector";
+import { SearchInput } from "../../components/movies/search-input/search-input";
 
 @Component({
   selector: 'app-home-page',
-  imports: [MovieList, GenreSelector],
+  imports: [MovieList, GenreSelector, SearchInput],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
 })
@@ -63,5 +64,9 @@ export default class HomePage {
     this.selectedGenreId.set(genreId);
     this.page.set(1);
     this.loadedMovies.set([]);
+  }
+
+  onSearch(query: string) {
+    console.log('Search query:', query);
   }
 }
