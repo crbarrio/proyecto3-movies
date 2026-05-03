@@ -1,0 +1,20 @@
+@if (movieResource.error()) {
+  <div class="text-red-500 text-center mt-4">Failed to load. Please try again later.</div>
+} @else if (movieResource.isLoading()) {
+  <div class="text-gray-500 text-center mt-4">Loading details...</div>
+} @else if (movieResource.hasValue()) {
+    @let movie = movieResource.value();
+    
+    <div class="text-center mt-4">
+    <h1 class="text-4xl font-bold mb-2">{{ movie.title }}</h1>
+    <p class="text-lg text-gray-400 mb-4">{{ movie.releaseDate| date:'longDate' }}</p>
+    <p class="text-sm text-gray-400 mb-2">{{ movie.genres!.join(', ') }}</p>
+    <p class="text-sm text-gray-400 mb-4">Runtime: {{ movie.runtime }} min</p>
+    <img alt="{{movie.title}} Movie Poster" class="mx-auto rounded-lg shadow-lg mb-4"
+      data-alt="{{movie.title}} Movie Poster"
+      src="{{baseImageUrl}}{{movie.posterPath}}" />
+    <p class="text-gray-300 max-w-2xl mx-auto">{{ movie.overview }}</p>
+    </div>
+}
+
+<button (click)="goBack()" class="primary-button">Go Back</button>

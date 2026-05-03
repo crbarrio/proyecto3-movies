@@ -6,16 +6,20 @@ import { MovieCard } from '../movie-card/movie-card';
   selector: 'app-movie-list',
   imports: [MovieCard],
   templateUrl: './movie-list.html',
-  styleUrl: './movie-list.css',
 })
 export class MovieList {
   movies = input.required<Movie[]>();
   isLoadingMore = input(false);
   hasMorePages = input(true);
+  selectedMovie = output<number>();
 
   nextPage = output<void>();
 
   onLoadMore() {
     this.nextPage.emit();
+  }
+
+  onSelectMovie(movieId: number) {
+    this.selectedMovie.emit(movieId);
   }
 }

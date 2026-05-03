@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Movie } from '../../../interfaces/tmdb-movie.interface';
 import { environment } from '../../../../environments/environment.development';
 import { TMDB_GENRES_BY_ID } from '../../../catalogs/tmdb-genres';
@@ -7,7 +7,6 @@ import { TMDB_GENRES_BY_ID } from '../../../catalogs/tmdb-genres';
   selector: 'app-movie-card',
   imports: [],
   templateUrl: './movie-card.html',
-  styleUrl: './movie-card.css',
 })
 export class MovieCard {
   baseImageUrl = environment.tmdbImageBaseUrl;
@@ -19,4 +18,10 @@ export class MovieCard {
       return genreName ? [genreName] : [];
     }).slice(0, 2)
   );
+  
+  selectedMovie = output<number>();
+
+  onSelectMovie() {
+    this.selectedMovie.emit(this.movie().id);
+  }
 }

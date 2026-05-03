@@ -5,6 +5,7 @@ import { Movie, TMDBMovieResponse } from '../../interfaces/tmdb-movie.interface'
 import { MovieService } from '../../services/movie.service';
 import { GenreSelector } from "../../components/movies/genre-selector/genre-selector";
 import { SearchInput } from "../../components/movies/search-input/search-input";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -14,6 +15,7 @@ import { SearchInput } from "../../components/movies/search-input/search-input";
 })
 export default class HomePage {
   private movieService = inject(MovieService);
+  private router = inject(Router);
 
   page = signal(1);
   searchQuery = signal('');
@@ -98,6 +100,10 @@ export default class HomePage {
     }
 
     this.resetMovieList();
+  }
+
+  onMovieSelected(id: number) {
+    this.router.navigate(['/movie', id]);
   }
 
 }
