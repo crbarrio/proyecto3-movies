@@ -5,9 +5,15 @@
   </div>
 
 
-  <app-search-input (search)="onSearch($event)"></app-search-input>
+  <app-search-input
+    [query]="searchQuery()"
+    (queryChange)="onSearchQueryChange($event)">
+  </app-search-input>
 
-  <app-genre-selector (genreSelected)="onGenreSelected($event)"></app-genre-selector>
+  <app-genre-selector
+    [selectedGenre]="selectedGenreId()"
+    (selectedGenreChange)="onGenreSelected($event)">
+  </app-genre-selector>
 </section>
 
 @if (movieResource.error()) {

@@ -1,4 +1,4 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, model, signal } from '@angular/core';
 import { TMDB_GENRES } from '../../../catalogs/tmdb-genres';
 
 
@@ -11,9 +11,8 @@ import { TMDB_GENRES } from '../../../catalogs/tmdb-genres';
 export class GenreSelector {
   private readonly collapsedGenreCount = 6;
 
-  selectedGenre = signal<number | null>(null);
+  selectedGenre = model<number | null>(null);
   isExpanded = signal(false);
-  genreSelected = output<number | null>();
   genres = TMDB_GENRES;
   hasHiddenGenres = this.genres.length > this.collapsedGenreCount;
 
@@ -35,7 +34,6 @@ export class GenreSelector {
 
   selectGenre(id: number | null) {
     this.selectedGenre.set(id);
-    this.genreSelected.emit(id);
   }
 
   toggleExpanded() {

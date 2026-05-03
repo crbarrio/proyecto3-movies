@@ -1,13 +1,16 @@
-import { Component, output } from '@angular/core';
+import { Component, model } from '@angular/core';
+import { Debounce } from './search-input.directive';
+
 
 @Component({
   selector: 'app-search-input',
-  imports: [],
+  imports: [Debounce],
   templateUrl: './search-input.html',
-  styleUrl: './search-input.css',
 })
 export class SearchInput {
 
-  search = output<string>();
+  readonly query = model('');
+
+
 
 }
