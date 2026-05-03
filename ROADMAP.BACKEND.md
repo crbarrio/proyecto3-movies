@@ -114,7 +114,66 @@ npx prisma migrate dev
 
 ---
 
-# [ ] FASE 5 — FAVORITOS
+# [ ] FASE 5 — CAMBIO API TMBD A BACKEND
+
+## Implementar
+- Mover todas las llamadas de api de front a api propia
+- Crear modulo tmdb en back
+- Ofrecer resultados combinados de base de datos propia y tmbd dependiendo de si usuario tiene token JWT o no -> Endpoint híbrido.
+
+```
+movies/
+ ├── movies.controller.ts
+ ├── movies.service.ts
+ ├── tmdb.service.ts
+
+```
+
+Controller
+```typescript
+@Get('trending')
+getTrending(@Req() req) {
+  return this.moviesService.getTrending(req.user?.id);
+}
+```
+
+Service
+```typescript
+async getTrending(userId?: string) {
+
+  const movies = await this.tmdbService.getTrending();
+
+  if (!userId) {
+    return movies;
+  }
+
+  const favorites =
+    await this.favoritesService.getUserFavorites(userId);
+
+  const ratings =
+    await this.ratingsService.getUserRatings(userId);
+
+  return movies.map(movie => ({
+    ...movie,
+    isFavorite: favorites.includes(movie.id),
+    myRating: ratings[movie.id] ?? null
+  }));
+}
+```
+
+DTO
+```typescript
+type Movie = {
+  id: number;
+  title: string;
+
+  isFavorite?: boolean;
+  myRating?: number | null;
+}
+```
+
+
+# [ ] FASE 6 — FAVORITOS
 
 ## Endpoints
 
