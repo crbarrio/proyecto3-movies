@@ -39,4 +39,25 @@ export class MovieService {
       })
     );
   }
+
+  searchMovies(query: string, page: number): Observable<TMDBMovieResponse> {
+    const params = new URLSearchParams({ query, page: String(page) });
+    return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/search/movie?${params.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${this.tmdbAccessToken}`,
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    }).pipe(
+      tap({
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('Unauthorized: Invalid TMDB access token.');
+            return;
+          }
+
+          console.error('An error occurred:', error.message);
+        },
+      })
+    );
+  }
 }
