@@ -3,18 +3,181 @@
 } @else if (movieResource.isLoading()) {
   <div class="text-gray-500 text-center mt-4">Loading details...</div>
 } @else if (movieResource.hasValue()) {
-    @let movie = movieResource.value();
-    
-    <div class="text-center mt-4">
-    <h1 class="text-4xl font-bold mb-2">{{ movie.title }}</h1>
-    <p class="text-lg text-gray-400 mb-4">{{ movie.releaseDate| date:'longDate' }}</p>
-    <p class="text-sm text-gray-400 mb-2">{{ movie.genres!.join(', ') }}</p>
-    <p class="text-sm text-gray-400 mb-4">Runtime: {{ movie.runtime }} min</p>
-    <img alt="{{movie.title}} Movie Poster" class="mx-auto rounded-lg shadow-lg mb-4"
-      data-alt="{{movie.title}} Movie Poster"
-      src="{{baseImageUrl}}{{movie.posterPath}}" />
-    <p class="text-gray-300 max-w-2xl mx-auto">{{ movie.overview }}</p>
-    </div>
-}
+  @let movie = movieResource.value();
+  @let genreNames = (movie.genres ?? []).map((genre) => genre.name).join(', ');
+  @let directors = movie.credits?.crew ?? [];
+  @let castMembers = movie.credits?.cast ?? [];
+  @let trailers = movie.videos?.results ?? [];
+  @let similarMovies = movie.similar?.results ?? [];
 
-<button (click)="goBack()" class="primary-button">Go Back</button>
+  <section class="mx-auto mt-6 flex max-w-6xl flex-col gap-10 px-4 pb-12 md:px-6">
+    <div class="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
+      <div class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 shadow-xl">
+        @if (movie.posterPath) {
+          <img
+            alt="{{movie.title}} Movie Poster"
+            class="aspect-2/3 h-full w-full object-cover"
+            data-alt="{{movie.title}} Movie Poster"
+            src="{{baseImageUrl}}{{movie.posterPath}}" />
+        } @else {
+          <div class="flex aspect-2/3 items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-neutral-950 p-6 text-center text-sm font-semibold uppercase tracking-[0.3em] text-neutral-500">
+            No poster available
+          </div>
+        }
+      </div>
+
+      <div class="space-y-6">
+        <div class="space-y-3">
+          <h1 class="text-4xl font-bold text-white md:text-5xl">{{ movie.title }}</h1>
+
+          @if (genreNames) {
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-400">{{ genreNames }}</p>
+          }
+
+          @if (movie.overview) {
+            <p class="max-w-3xl text-base leading-7 text-neutral-300 md:text-lg">{{ movie.overview }}</p>
+          } @else {
+            <p class="max-w-3xl text-base leading-7 text-neutral-500 md:text-lg">No overview available for this movie.</p>
+          }
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+            <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Release</p>
+            <p class="mt-2 text-lg font-semibold text-white">
+              {{ movie.releaseDate ? (movie.releaseDate | date:'longDate') : 'Unknown' }}
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+            <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Runtime</p>
+            <p class="mt-2 text-lg font-semibold text-white">{{ movie.runtime ? movie.runtime + ' min' : 'Not available' }}</p>
+          </div>
+        </div>
+
+        @if (directors.length) {
+          <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-neutral-400">Direction</h2>
+            <div class="mt-4 flex flex-wrap gap-3">
+              @for (director of directors; track director.id) {
+                <div class="rounded-full border border-neutral-700 bg-neutral-950 px-4 py-2 text-sm text-neutral-200">
+                  <span class="font-semibold text-white">{{ director.name }}</span>
+                  @if (director.job) {
+                    <span class="text-neutral-500"> · {{ director.job }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <section class="space-y-4">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Top Cast</h2>
+          <p class="text-sm text-neutral-400">Main credited cast from the detail endpoint.</p>
+        </div>
+      </div>
+
+      @if (castMembers.length) {
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          @for (castMember of castMembers; track castMember.id) {
+            <article class="flex gap-4 rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+              @if (castMember.profilePath) {
+                <img
+                  alt="{{ castMember.name }} profile photo"
+                  class="h-20 w-20 rounded-xl object-cover"
+                  src="{{ baseImageUrl }}{{ castMember.profilePath }}" />
+              } @else {
+                <div class="flex h-20 w-20 items-center justify-center rounded-xl bg-neutral-800 text-2xl font-bold text-neutral-500">
+                  {{ castMember.name.charAt(0) }}
+                </div>
+              }
+
+              <div class="min-w-0">
+                <h3 class="truncate text-lg font-semibold text-white">{{ castMember.name }}</h3>
+                <p class="mt-1 text-sm text-indigo-400">{{ castMember.character || 'Character not available' }}</p>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+          No cast information available.
+        </div>
+      }
+    </section>
+
+    <section class="space-y-4">
+      <div>
+        <h2 class="text-2xl font-bold text-white">Videos</h2>
+        <p class="text-sm text-neutral-400">Available trailers from YouTube.</p>
+      </div>
+
+      @if (trailers.length) {
+        <div class="grid gap-4 lg:grid-cols-2">
+          @for (trailer of trailers; track trailer.key) {
+            <article class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/70">
+              <div class="aspect-video bg-black">
+                <iframe
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="h-full w-full"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  [src]="getTrailerEmbedUrl(trailer.key)"
+                  title="{{ movie.title }} trailer">
+                </iframe>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+          No trailers available.
+        </div>
+      }
+    </section>
+
+    <section class="space-y-4">
+      <div>
+        <h2 class="text-2xl font-bold text-white">Similar Movies</h2>
+        <p class="text-sm text-neutral-400">Recommendations related to this title.</p>
+      </div>
+
+      @if (similarMovies.length) {
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+          @for (similarMovie of similarMovies; track similarMovie.id) {
+            <article 
+              [routerLink]="['/movie', similarMovie.id]"
+              class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/70 cursor-pointer transition hover:bg-neutral-900"
+            >
+              @if (similarMovie.posterPath) {
+                <img
+                  alt="{{ similarMovie.title }} Movie Poster"
+                  class="aspect-2/3 w-full object-cover"
+                  src="{{ baseImageUrl }}{{ similarMovie.posterPath }}" />
+              } @else {
+                <div class="flex aspect-2/3 items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-neutral-950 p-4 text-center text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
+                  No poster
+                </div>
+              }
+              <div class="p-3">
+                <h3 class="line-clamp-2 text-sm font-semibold text-white">{{ similarMovie.title }}</h3>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+          No similar movies available.
+        </div>
+      }
+    </section>
+
+    <div>
+      <button (click)="goBack()" class="primary-button">Go Back</button>
+    </div>
+  </section>
+}
