@@ -1,8 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { Observable, tap } from 'rxjs';
-import { TMDBMovieResponse } from '../interfaces/tmdb-movie.interface';
+import { map, Observable, tap } from 'rxjs';
+import { TMDBMovieDetails, TMDBMovieResponse } from '../interfaces/tmdb-movie.interface';
+import { MovieDetails, MovieResponse } from '../interfaces/movie.interface';
+import { MovieMapper } from '../mappers/movie-details.mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +15,7 @@ export class MovieService {
   private tmdbApiUrl = environment.tmdbApiUrl;
   private tmdbAccessToken = environment.tmdbAccessToken;
 
-  getTrendingMovies(page: number, genreId: number | null): Observable<TMDBMovieResponse> {
+  getTrendingMovies(page: number, genreId: number | null): Observable<MovieResponse> {
     const endpoint = genreId === null ? 'trending/movie/week' : 'discover/movie';
     const params = new URLSearchParams({ page: String(page) });
 
@@ -27,6 +29,7 @@ export class MovieService {
         'Content-Type': 'application/json;charset=utf-8',
       },
     }).pipe(
+      map(resp => MovieMapper.mapTMDBMovieResposeToMoiveResponse(resp)),
       tap({
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -40,7 +43,7 @@ export class MovieService {
     );
   }
 
-  searchMovies(query: string, page: number): Observable<TMDBMovieResponse> {
+  searchMovies(query: string, page: number): Observable<MovieResponse> {
     const params = new URLSearchParams({ query, page: String(page) });
     return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/search/movie?${params.toString()}`, {
       headers: {
@@ -48,6 +51,7 @@ export class MovieService {
         'Content-Type': 'application/json;charset=utf-8',
       },
     }).pipe(
+      map(resp => MovieMapper.mapTMDBMovieResposeToMoiveResponse(resp)),
       tap({
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -60,4 +64,26 @@ export class MovieService {
       })
     );
   }
+
+  getMovieById(movieId: number): Observable<MovieDetails> {
+    return this.http.get<TMDBMovieDetails>(`${this.tmdbApiUrl}/movie/${movieId}?append_to_response=credits,similar,videos`, {
+      headers: {
+        Authorization: `Bearer ${this.tmdbAccessToken}`,
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    }).pipe(
+      map( (resp => MovieMapper.mapTMDBMovieDetailsToMovie(resp)) ),
+      tap({
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('Unauthorized: Invalid TMDB access token.');
+            return;
+          }
+
+          console.error('An error occurred:', error.message);
+        },
+      })
+    );
+  }
+
 }

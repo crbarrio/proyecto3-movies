@@ -59,6 +59,7 @@ Referencia de diseno:
 - [ ] Crear detalle de director.
 - [ ] Mostrar fotografía, nombre, nacionalidad, películas en las que participa y películas en las que ha sido actor.
 - [ ] Emitir señal en la card para que el listado gestione la navegación al detalle con `navigator`.
+- [ ] Crear imagen para cuando no hay cover de la pelicula. que no rompa la imagen
 
 
 ## Navegación y búsqueda
