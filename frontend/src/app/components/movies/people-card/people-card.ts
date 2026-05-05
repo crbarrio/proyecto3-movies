@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 
 @Component({
@@ -8,5 +8,10 @@ import { environment } from '../../../../environments/environment.development';
 })
 export class PeopleCard {
   castMember = input.required<any>();
+  selected = output<number>();
   baseImageUrl = environment.tmdbImageBaseUrl;
+
+  selectPerson() {
+    this.selected.emit(this.castMember().id);
+  }
 }
