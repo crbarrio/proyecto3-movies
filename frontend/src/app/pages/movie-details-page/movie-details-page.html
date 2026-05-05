@@ -11,67 +11,8 @@
   @let similarMovies = movie.similar ?? [];
 
   <section class="mx-auto mt-6 flex max-w-6xl flex-col gap-10 px-4 pb-12 md:px-6">
-    <div class="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
-      <div class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 shadow-xl">
-        @if (movie.posterPath) {
-          <img
-            alt="{{movie.title}} Movie Poster"
-            class="aspect-2/3 h-full w-full object-cover"
-            data-alt="{{movie.title}} Movie Poster"
-            src="{{baseImageUrl}}{{movie.posterPath}}" />
-        } @else {
-          <div class="flex aspect-2/3 items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-neutral-950 p-6 text-center text-sm font-semibold uppercase tracking-[0.3em] text-neutral-500">
-            No poster available
-          </div>
-        }
-      </div>
-
-      <div class="space-y-6">
-        <div class="space-y-3">
-          <h1 class="text-4xl font-bold text-white md:text-5xl">{{ movie.title }}</h1>
-
-          @if (genreNames) {
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-400">{{ genreNames }}</p>
-          }
-
-          @if (movie.overview) {
-            <p class="max-w-3xl text-base leading-7 text-neutral-300 md:text-lg">{{ movie.overview }}</p>
-          } @else {
-            <p class="max-w-3xl text-base leading-7 text-neutral-500 md:text-lg">No overview available for this movie.</p>
-          }
-        </div>
-
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
-            <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Release</p>
-            <p class="mt-2 text-lg font-semibold text-white">
-              {{ movie.releaseDate ? (movie.releaseDate | date:'longDate') : 'Unknown' }}
-            </p>
-          </div>
-
-          <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
-            <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Runtime</p>
-            <p class="mt-2 text-lg font-semibold text-white">{{ movie.runtime ? movie.runtime + ' min' : 'Not available' }}</p>
-          </div>
-        </div>
-
-        @if (directors.length) {
-          <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-neutral-400">Direction</h2>
-            <div class="mt-4 flex flex-wrap gap-3">
-              @for (director of directors; track director.id) {
-                <div class="rounded-full border border-neutral-700 bg-neutral-950 px-4 py-2 text-sm text-neutral-200">
-                  <span class="font-semibold text-white">{{ director.name }}</span>
-                  @if (director.job) {
-                    <span class="text-neutral-500"> · {{ director.job }}</span>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </div>
-    </div>
+    
+    <app-details-hero [movie]="movie" [genreNames]="genreNames" [directors]="directors"></app-details-hero>
 
     <section class="space-y-4">
       <div class="flex items-end justify-between gap-4">
@@ -84,23 +25,7 @@
       @if (castMembers.length) {
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           @for (castMember of castMembers; track castMember.id) {
-            <article class="flex gap-4 rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
-              @if (castMember.profilePath) {
-                <img
-                  alt="{{ castMember.name }} profile photo"
-                  class="h-20 w-20 rounded-xl object-cover"
-                  src="{{ baseImageUrl }}{{ castMember.profilePath }}" />
-              } @else {
-                <div class="flex h-20 w-20 items-center justify-center rounded-xl bg-neutral-800 text-2xl font-bold text-neutral-500">
-                  {{ castMember.name.charAt(0) }}
-                </div>
-              }
-
-              <div class="min-w-0">
-                <h3 class="truncate text-lg font-semibold text-white">{{ castMember.name }}</h3>
-                <p class="mt-1 text-sm text-indigo-400">{{ castMember.character || 'Character not available' }}</p>
-              </div>
-            </article>
+            <app-people-card [castMember]="castMember"></app-people-card>
           }
         </div>
       } @else {

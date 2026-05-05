@@ -6,10 +6,12 @@ import { environment } from '../../../environments/environment';
 import { MovieDetails } from '../../interfaces/movie.interface';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MovieCard } from "../../components/movies/movie-card/movie-card";
+import { PeopleCard } from "../../components/movies/people-card/people-card";
+import { DetailsHero } from "../../components/movies/details-hero/details-hero";
 
 @Component({
   selector: 'app-movie-details-page',
-  imports: [DatePipe, MovieCard],
+  imports: [MovieCard, PeopleCard, DetailsHero],
   templateUrl: './movie-details-page.html',
 })
 export default class MovieDetailsPage {

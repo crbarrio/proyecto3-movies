@@ -1,0 +1,16 @@
+<article class="flex gap-4 rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+    @if (castMember().profilePath) {
+    <img alt="{{ castMember().name }} profile photo" class="h-20 w-20 rounded-xl object-cover"
+        src="{{ baseImageUrl }}{{ castMember().profilePath }}" />
+    } @else {
+    <div
+        class="flex h-20 w-20 items-center justify-center rounded-xl bg-neutral-800 text-2xl font-bold text-neutral-500">
+        {{ castMember().name.charAt(0) }}
+    </div>
+    }
+
+    <div class="min-w-0">
+        <h3 class="truncate text-lg font-semibold text-white">{{ castMember().name }}</h3>
+        <p class="mt-1 text-sm text-indigo-400">{{ castMember().character || 'Character not available' }}</p>
+    </div>
+</article>
