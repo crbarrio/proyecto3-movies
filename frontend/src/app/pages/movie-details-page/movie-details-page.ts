@@ -36,4 +36,8 @@ export default class MovieDetailsPage {
   getTrailerEmbedUrl(key: string) {
     return this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${key}`);
   }
+
+  showPersonDetails(personId: number) {
+    console.log(`Mostrar detalles para la persona con ID: ${personId}`);
+  }
 }

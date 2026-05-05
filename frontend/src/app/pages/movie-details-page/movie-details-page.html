@@ -25,7 +25,10 @@
       @if (castMembers.length) {
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           @for (castMember of castMembers; track castMember.id) {
-            <app-people-card [castMember]="castMember"></app-people-card>
+            <div (click)="showPersonDetails(castMember.id)">
+              <app-people-card [castMember]="castMember"></app-people-card>
+            </div>
+            
           }
         </div>
       } @else {
