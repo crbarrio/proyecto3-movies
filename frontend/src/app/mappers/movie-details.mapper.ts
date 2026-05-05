@@ -1,10 +1,10 @@
-import { TMDBMovieDetails } from "../interfaces/tmdb-movie.interface";
-import { Movie } from "../interfaces/movie.interface";
+import { TMDBMovie, TMDBMovieDetails, TMDBMovieResponse } from "../interfaces/tmdb-movie.interface";
+import { Movie, MovieDetails, MovieResponse } from "../interfaces/movie.interface";
 
 
 export class MovieMapper {
 
-    static mapTMDBMovieDetailsToMovie(tmdbMovieDetails: TMDBMovieDetails): Movie {
+    static mapTMDBMovieDetailsToMovie(tmdbMovieDetails: TMDBMovieDetails): MovieDetails {
         return {
             id: tmdbMovieDetails.id,
             title: tmdbMovieDetails.title,
@@ -27,13 +27,16 @@ export class MovieMapper {
                     profilePath: crew.profile_path
                 }))
             },
-            similar: {
-                results: tmdbMovieDetails.similar.results.slice(0, 6).map(similar => ({
+            similar: tmdbMovieDetails.similar?.results.map(similar => {
+                return {
                     id: similar.id,
                     title: similar.title,
+                    releaseDate: similar.release_date,
+                    genres: similar.genre_ids,
+                    overview: similar.overview,
                     posterPath: similar.poster_path
-                }))
-            },
+                };
+            }).slice(0, 12) || [],
             videos: {
                 results: tmdbMovieDetails.videos.results.filter(video => video.type === "Trailer" && video.site === "YouTube").slice(0, 2).map(video => ({
                     type: video.type,
@@ -41,6 +44,26 @@ export class MovieMapper {
                     key: video.key
                 }))
             }
+        };
+    }
+
+    static mapTMDBMovieToMovie(tmdbMovie: TMDBMovie): Movie {
+        return {
+            id: tmdbMovie.id,
+            title: tmdbMovie.title,
+            releaseDate: tmdbMovie.release_date,
+            genres: tmdbMovie.genre_ids,
+            overview: tmdbMovie.overview,
+            posterPath: tmdbMovie.poster_path
+        };
+    }
+
+    static mapTMDBMovieResposeToMoiveResponse(tmdbResponse: TMDBMovieResponse): MovieResponse {
+        return {
+            page: tmdbResponse.page,
+            results: tmdbResponse.results.map(tmdbMovie => this.mapTMDBMovieToMovie(tmdbMovie)),
+            total_pages: tmdbResponse.total_pages,
+            total_results: tmdbResponse.total_results
         };
     }
 }

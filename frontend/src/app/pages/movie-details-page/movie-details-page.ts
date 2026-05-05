@@ -3,14 +3,13 @@ import { DatePipe, Location } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../services/movie.service';
 import { environment } from '../../../environments/environment';
-import { Movie } from '../../interfaces/movie.interface';
+import { MovieDetails } from '../../interfaces/movie.interface';
 import { DomSanitizer } from '@angular/platform-browser';
-import { RouterLink } from "@angular/router";
 import { MovieCard } from "../../components/movies/movie-card/movie-card";
 
 @Component({
   selector: 'app-movie-details-page',
-  imports: [DatePipe, RouterLink, MovieCard],
+  imports: [DatePipe, MovieCard],
   templateUrl: './movie-details-page.html',
 })
 export default class MovieDetailsPage {
@@ -23,7 +22,7 @@ export default class MovieDetailsPage {
   
   id = input.required<number>();
   
-  movieResource = rxResource<Movie, { id: number }>({
+  movieResource = rxResource< MovieDetails, { id: number }>({
     params: () => ({ id: this.id() }),
     stream: ({ params }) => this.movieService.getMovieById(params.id),
   });

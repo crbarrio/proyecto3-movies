@@ -2,12 +2,12 @@
 
 export interface TMDBMovieResponse {
     page:          number;
-    results:       Movie[];
+    results:       TMDBMovie[];
     total_pages:   number;
     total_results: number;
 }
 
-export interface Movie {
+export interface TMDBMovie {
     adult:             boolean;
     backdrop_path:     string;
     id:                number;

@@ -1,5 +1,5 @@
 
-export interface Movie {
+export interface MovieDetails {
 
     id: number;
     title: string;
@@ -22,13 +22,7 @@ export interface Movie {
             profilePath?: string | null;
         }[];
     };
-    similar?: {
-        results?: {
-            id: number;
-            title: string;
-            posterPath?: string | null;
-        }[];
-    };
+    similar?: Movie[];
     videos?: {
         results?: {
             type?: string;
@@ -38,11 +32,19 @@ export interface Movie {
     };
 }
 
+export interface MovieResponse {
+    page: number;
+    results: Movie[];
+    total_pages: number;
+    total_results: number;
+}
 
+export interface Movie {
 
-
-// title, release_date, runtime, genres (only name), overview, poster_path
-// credit -cast : id, name, character, profile_path (only 6 firsts)
-// credit - crew : id, name, job, profile_path( where job is Director) (only 6 firsts)
-// similar - results: id, title, poster_path (only 6 firsts)
-// videos - results: type is Trailer, site is YouTube, key (only 2 firsts)
+    id: number;
+    title: string;
+    releaseDate: Date | string;
+    genres: number[];
+    overview: string;
+    posterPath?: string | null;
+}

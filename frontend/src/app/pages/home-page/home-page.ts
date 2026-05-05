@@ -1,11 +1,10 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieList } from '../../components/movies/movie-list/movie-list';
-import { Movie, TMDBMovieResponse } from '../../interfaces/tmdb-movie.interface';
 import { MovieService } from '../../services/movie.service';
 import { GenreSelector } from "../../components/movies/genre-selector/genre-selector";
 import { SearchInput } from "../../components/movies/search-input/search-input";
-import { Router } from '@angular/router';
+import { Movie, MovieResponse } from '../../interfaces/movie.interface';
 
 @Component({
   selector: 'app-home-page',
@@ -15,7 +14,6 @@ import { Router } from '@angular/router';
 })
 export default class HomePage {
   private movieService = inject(MovieService);
-  private router = inject(Router);
 
   page = signal(1);
   searchQuery = signal('');
@@ -26,7 +24,7 @@ export default class HomePage {
     genreId: this.selectedGenreId(),
   }));
 
-  movieResource = rxResource<TMDBMovieResponse, { page: number; genreId: number | null, query: string }>({
+  movieResource = rxResource<MovieResponse, { page: number; genreId: number | null, query: string }>({
     params: () => ({ ...this.requestParams(), query: this.searchQuery() }),
     stream: ({ params }) => 
       params.query 
@@ -71,7 +69,7 @@ export default class HomePage {
     this.resetMovieList();
   }
 
-  private mergeMovies(currentMovies: Movie[], response: TMDBMovieResponse): Movie[] {
+  private mergeMovies(currentMovies: Movie[], response: MovieResponse): Movie[] {
     if (response.page === 1) {
       return response.results;
     }
@@ -100,10 +98,6 @@ export default class HomePage {
     }
 
     this.resetMovieList();
-  }
-
-  onMovieSelected(id: number) {
-    this.router.navigate(['/movie', id]);
   }
 
 }

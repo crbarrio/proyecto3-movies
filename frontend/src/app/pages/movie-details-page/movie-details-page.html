@@ -8,7 +8,7 @@
   @let directors = movie.credits?.crew ?? [];
   @let castMembers = movie.credits?.cast ?? [];
   @let trailers = movie.videos?.results ?? [];
-  @let similarMovies = movie.similar?.results ?? [];
+  @let similarMovies = movie.similar ?? [];
 
   <section class="mx-auto mt-6 flex max-w-6xl flex-col gap-10 px-4 pb-12 md:px-6">
     <div class="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
@@ -149,24 +149,7 @@
       @if (similarMovies.length) {
         <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
           @for (similarMovie of similarMovies; track similarMovie.id) {
-            <article 
-              [routerLink]="['/movie', similarMovie.id]"
-              class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/70 cursor-pointer transition hover:bg-neutral-900"
-            >
-              @if (similarMovie.posterPath) {
-                <img
-                  alt="{{ similarMovie.title }} Movie Poster"
-                  class="aspect-2/3 w-full object-cover"
-                  src="{{ baseImageUrl }}{{ similarMovie.posterPath }}" />
-              } @else {
-                <div class="flex aspect-2/3 items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-neutral-950 p-4 text-center text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
-                  No poster
-                </div>
-              }
-              <div class="p-3">
-                <h3 class="line-clamp-2 text-sm font-semibold text-white">{{ similarMovie.title }}</h3>
-              </div>
-            </article>
+            <app-movie-card [movie]="similarMovie"></app-movie-card>
           }
         </div>
       } @else {
