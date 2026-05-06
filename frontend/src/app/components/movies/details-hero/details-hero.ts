@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 
 @Component({
@@ -13,8 +13,12 @@ export class DetailsHero {
   movie = input.required<any>();
   genreNames = input.required<string>();
   directors = input.required<any[]>();
+  selectedPerson = output<string>();
 
   baseImageUrl = environment.tmdbImageBaseUrl;
 
+  selectPerson(personId: string) {
+    this.selectedPerson.emit(personId);
+  }
 
 }

@@ -5,6 +5,7 @@ import { map, Observable, tap } from 'rxjs';
 import { TMDBMovieDetails, TMDBMovieResponse } from '../interfaces/tmdb-movie.interface';
 import { MovieDetails, MovieResponse } from '../interfaces/movie.interface';
 import { MovieMapper } from '../mappers/movie-details.mapper';
+import { TMDBPerson } from '../interfaces/person.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -65,7 +66,7 @@ export class MovieService {
     );
   }
 
-  getMovieById(movieId: number): Observable<MovieDetails> {
+  getMovieById(movieId: string): Observable<MovieDetails> {
     return this.http.get<TMDBMovieDetails>(`${this.tmdbApiUrl}/movie/${movieId}?append_to_response=credits,similar,videos`, {
       headers: {
         Authorization: `Bearer ${this.tmdbAccessToken}`,
@@ -73,6 +74,27 @@ export class MovieService {
       },
     }).pipe(
       map( (resp => MovieMapper.mapTMDBMovieDetailsToMovie(resp)) ),
+      tap({
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('Unauthorized: Invalid TMDB access token.');
+            return;
+          }
+
+          console.error('An error occurred:', error.message);
+        },
+      })
+    );
+  }
+
+
+  getPersonById(personId: string): Observable<TMDBPerson> {
+    return this.http.get<TMDBPerson>(`${this.tmdbApiUrl}/person/${personId}`, {
+      headers: {
+        Authorization: `Bearer ${this.tmdbAccessToken}`,
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    }).pipe(
       tap({
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {

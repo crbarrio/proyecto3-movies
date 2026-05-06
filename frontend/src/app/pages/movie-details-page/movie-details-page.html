@@ -12,7 +12,12 @@
 
   <section class="mx-auto mt-6 flex max-w-6xl flex-col gap-10 px-4 pb-12 md:px-6">
     
-    <app-details-hero [movie]="movie" [genreNames]="genreNames" [directors]="directors"></app-details-hero>
+    <app-details-hero
+      [movie]="movie"
+      [genreNames]="genreNames"
+      [directors]="directors"
+      (selectedPerson)="openPerson($event)">
+    </app-details-hero>
 
     <section class="space-y-4">
       <div class="flex items-end justify-between gap-4">
@@ -25,10 +30,10 @@
       @if (castMembers.length) {
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           @for (castMember of castMembers; track castMember.id) {
-            <div (click)="showPersonDetails(castMember.id)">
-              <app-people-card [castMember]="castMember"></app-people-card>
-            </div>
-            
+            <app-people-card
+              [castMember]="castMember"
+              (selectedPerson)="openPerson($event)">
+            </app-people-card>
           }
         </div>
       } @else {

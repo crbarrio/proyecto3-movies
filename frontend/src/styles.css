@@ -1,8 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+@plugin 'tailwind-scrollbar';
 
 .primary-button {
     @apply bg-indigo-500 text-white font-semibold px-4 py-2 rounded-md hover:cursor-pointer hover:bg-indigo-600 duration-300 scale-95 active:scale-90 transition-all;
 }
 
+.people-details-backdrop {
+  @apply bg-zinc-900/20 backdrop-blur-xs;
+}
+
+.people-details-dialog {
+  @apply w-full max-w-2xl px-4;
+}
+
+.people-details-dialog .cdk-dialog-container {
+  @apply bg-transparent shadow-none p-0 outline-none;
+}
+
+.people-details-dialog .cdk-dialog-container:focus,
+.people-details-dialog .cdk-dialog-container:focus-visible {
+  outline: none;
+}

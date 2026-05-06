@@ -10,8 +10,8 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/home-page/home-page')
             },
             {
-                path: 'movie/:id',
-                loadComponent: () => import('./pages/movie-details-page/movie-details-page')
+                path: 'movie/:movieId',
+                loadComponent: () => import('./pages/movie-details-page/movie-details-page'),
             },
             {
                 path: '**',

@@ -47,12 +47,15 @@
             <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-neutral-400">Direction</h2>
             <div class="mt-4 flex flex-wrap gap-3">
                 @for (director of directors(); track director.id) {
-                <div class="rounded-full border border-neutral-700 bg-neutral-950 px-4 py-2 text-sm text-neutral-200">
+                <button
+                    type="button"
+                    class="rounded-full border border-neutral-700 bg-neutral-950 px-4 py-2 text-sm text-neutral-200 transition hover:cursor-pointer hover:border-neutral-600 hover:bg-neutral-900"
+                    (click)="selectPerson(director.id)">
                     <span class="font-semibold text-white">{{ director.name }}</span>
                     @if (director.job) {
                     <span class="text-neutral-500"> · {{ director.job }}</span>
                     }
-                </div>
+                </button>
                 }
             </div>
         </div>
