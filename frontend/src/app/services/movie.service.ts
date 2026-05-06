@@ -66,7 +66,7 @@ export class MovieService {
     );
   }
 
-  getMovieById(movieId: number): Observable<MovieDetails> {
+  getMovieById(movieId: string): Observable<MovieDetails> {
     return this.http.get<TMDBMovieDetails>(`${this.tmdbApiUrl}/movie/${movieId}?append_to_response=credits,similar,videos`, {
       headers: {
         Authorization: `Bearer ${this.tmdbAccessToken}`,
@@ -88,7 +88,7 @@ export class MovieService {
   }
 
 
-  getPersonById(personId: number): Observable<TMDBPerson> {
+  getPersonById(personId: string): Observable<TMDBPerson> {
     return this.http.get<TMDBPerson>(`${this.tmdbApiUrl}/person/${personId}`, {
       headers: {
         Authorization: `Bearer ${this.tmdbAccessToken}`,

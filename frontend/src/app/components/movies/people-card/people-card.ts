@@ -8,10 +8,10 @@ import { environment } from '../../../../environments/environment.development';
 })
 export class PeopleCard {
   castMember = input.required<any>();
-  selected = output<number>();
+  selectedPerson = output<string>();
   baseImageUrl = environment.tmdbImageBaseUrl;
 
   selectPerson() {
-    this.selected.emit(this.castMember().id);
+    this.selectedPerson.emit(this.castMember().id);
   }
 }

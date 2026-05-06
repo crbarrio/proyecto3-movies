@@ -12,13 +12,15 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './people-details.html',
 })
 export class PeopleDetails {
-  data = inject<{ personId: number }>(DIALOG_DATA);
-  personId = this.data.personId;
+  data = inject<{ personId: string }>(DIALOG_DATA);
+  readonly personId = this.data.personId;
   private movieService = inject(MovieService);
   private dialogRef = inject(DialogRef<PeopleDetails>);
+
   baseImageUrl = environment.tmdbImageBaseUrl;
 
-  personDetailsResource = rxResource<TMDBPerson, { personId: number }>({
+
+  personDetailsResource = rxResource<TMDBPerson, { personId: string }>({
     params: () => ({ personId: this.personId }),
     stream: ({ params }) => this.movieService.getPersonById(params.personId),
   });

@@ -12,7 +12,7 @@
 }
 
 .people-details-dialog {
-  @apply w-full px-4;
+  @apply w-full max-w-2xl px-4;
 }
 
 .people-details-dialog .cdk-dialog-container {

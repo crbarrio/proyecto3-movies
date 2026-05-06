@@ -13,11 +13,11 @@ export class DetailsHero {
   movie = input.required<any>();
   genreNames = input.required<string>();
   directors = input.required<any[]>();
-  selectedPerson = output<number>();
+  selectedPerson = output<string>();
 
   baseImageUrl = environment.tmdbImageBaseUrl;
 
-  selectPerson(personId: number) {
+  selectPerson(personId: string) {
     this.selectedPerson.emit(personId);
   }
 
