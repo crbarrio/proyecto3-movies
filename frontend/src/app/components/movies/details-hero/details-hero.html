@@ -1,0 +1,64 @@
+<section class="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
+    <div class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 shadow-xl">
+        @if (movie().posterPath) {
+        <img alt="{{movie().title}} Movie Poster" class="aspect-2/3 h-full w-full object-cover"
+            data-alt="{{movie().title}} Movie Poster" src="{{baseImageUrl}}{{movie().posterPath}}" />
+        } @else {
+        <div
+            class="flex aspect-2/3 items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-neutral-950 p-6 text-center text-sm font-semibold uppercase tracking-[0.3em] text-neutral-500">
+            No poster available
+        </div>
+        }
+    </div>
+
+    <div class="space-y-6">
+        <div class="space-y-3">
+            <h1 class="text-4xl font-bold text-white md:text-5xl">{{ movie().title }}</h1>
+
+            @if (genreNames().length) {
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-400">{{ genreNames() }}</p>
+            }
+
+            @if (movie().overview) {
+            <p class="max-w-3xl text-base leading-7 text-neutral-300 md:text-lg">{{ movie().overview }}</p>
+            } @else {
+            <p class="max-w-3xl text-base leading-7 text-neutral-500 md:text-lg">No overview available for this movie.
+            </p>
+            }
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+                <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Release</p>
+                <p class="mt-2 text-lg font-semibold text-white">
+                    {{ movie().releaseDate ? (movie().releaseDate | date:'longDate') : 'Unknown' }}
+                </p>
+            </div>
+
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+                <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Runtime</p>
+                <p class="mt-2 text-lg font-semibold text-white">{{ movie().runtime ? movie().runtime + ' min' : 'Not
+                    available' }}</p>
+            </div>
+        </div>
+
+        @if (directors().length) {
+        <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-neutral-400">Direction</h2>
+            <div class="mt-4 flex flex-wrap gap-3">
+                @for (director of directors(); track director.id) {
+                <button
+                    type="button"
+                    class="rounded-full border border-neutral-700 bg-neutral-950 px-4 py-2 text-sm text-neutral-200 transition hover:cursor-pointer hover:border-neutral-600 hover:bg-neutral-900"
+                    (click)="selectPerson(director.id)">
+                    <span class="font-semibold text-white">{{ director.name }}</span>
+                    @if (director.job) {
+                    <span class="text-neutral-500"> · {{ director.job }}</span>
+                    }
+                </button>
+                }
+            </div>
+        </div>
+        }
+    </div>
+</section>

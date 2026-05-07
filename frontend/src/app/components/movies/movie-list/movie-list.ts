@@ -1,12 +1,11 @@
 import { Component, input, output } from '@angular/core';
-import { Movie } from '../../../interfaces/tmdb-movie.interface';
 import { MovieCard } from '../movie-card/movie-card';
+import { Movie } from '../../../interfaces/movie.interface';
 
 @Component({
   selector: 'app-movie-list',
   imports: [MovieCard],
   templateUrl: './movie-list.html',
-  styleUrl: './movie-list.css',
 })
 export class MovieList {
   movies = input.required<Movie[]>();
@@ -18,4 +17,5 @@ export class MovieList {
   onLoadMore() {
     this.nextPage.emit();
   }
+
 }

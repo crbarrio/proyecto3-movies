@@ -1,0 +1,99 @@
+@if (movieResource.error()) {
+  <div class="text-red-500 text-center mt-4">Failed to load. Please try again later.</div>
+} @else if (movieResource.isLoading()) {
+  <div class="text-gray-500 text-center mt-4">Loading details...</div>
+} @else if (movieResource.hasValue()) {
+  @let movie = movieResource.value();
+  @let genreNames = (movie.genres ?? []).map((genre) => genre.name).join(', ');
+  @let directors = movie.credits?.crew ?? [];
+  @let castMembers = movie.credits?.cast ?? [];
+  @let trailers = movie.videos?.results ?? [];
+  @let similarMovies = movie.similar ?? [];
+
+  <section class="mx-auto mt-6 flex max-w-6xl flex-col gap-10 px-4 pb-12 md:px-6">
+    
+    <app-details-hero
+      [movie]="movie"
+      [genreNames]="genreNames"
+      [directors]="directors"
+      (selectedPerson)="openPerson($event)">
+    </app-details-hero>
+
+    <section class="space-y-4">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Top Cast</h2>
+          <p class="text-sm text-neutral-400">Main credited cast from the detail endpoint.</p>
+        </div>
+      </div>
+
+      @if (castMembers.length) {
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          @for (castMember of castMembers; track castMember.id) {
+            <app-people-card
+              [castMember]="castMember"
+              (selectedPerson)="openPerson($event)">
+            </app-people-card>
+          }
+        </div>
+      } @else {
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+          No cast information available.
+        </div>
+      }
+    </section>
+
+    <section class="space-y-4">
+      <div>
+        <h2 class="text-2xl font-bold text-white">Videos</h2>
+        <p class="text-sm text-neutral-400">Available trailers from YouTube.</p>
+      </div>
+
+      @if (trailers.length) {
+        <div class="grid gap-4 lg:grid-cols-2">
+          @for (trailer of trailers; track trailer.key) {
+            <article class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/70">
+              <div class="aspect-video bg-black">
+                <iframe
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="h-full w-full"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  [src]="getTrailerEmbedUrl(trailer.key)"
+                  title="{{ movie.title }} trailer">
+                </iframe>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+          No trailers available.
+        </div>
+      }
+    </section>
+
+    <section class="space-y-4">
+      <div>
+        <h2 class="text-2xl font-bold text-white">Similar Movies</h2>
+        <p class="text-sm text-neutral-400">Recommendations related to this title.</p>
+      </div>
+
+      @if (similarMovies.length) {
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+          @for (similarMovie of similarMovies; track similarMovie.id) {
+            <app-movie-card [movie]="similarMovie"></app-movie-card>
+          }
+        </div>
+      } @else {
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+          No similar movies available.
+        </div>
+      }
+    </section>
+
+    <div>
+      <button (click)="goBack()" class="primary-button">Go Back</button>
+    </div>
+  </section>
+}
