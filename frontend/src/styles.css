@@ -3,23 +3,38 @@
 @import 'tailwindcss';
 @plugin 'tailwind-scrollbar';
 
+.app-layout {
+  @apply font-sans bg-zinc-900 text-slate-200 antialiased min-h-screen flex flex-col m-auto;
+}
+
+.app-main {
+  @apply w-full max-w-7xl mx-auto px-4 grow flex-1 pt-24 pb-16 flex flex-col gap-4;
+}
 .primary-button {
     @apply bg-indigo-500 text-white font-semibold px-4 py-2 rounded-md hover:cursor-pointer hover:bg-indigo-600 duration-300 scale-95 active:scale-90 transition-all;
 }
 
-.people-details-backdrop {
+.app-modal-backdrop {
   @apply bg-zinc-900/20 backdrop-blur-xs;
 }
 
-.people-details-dialog {
-  @apply w-full max-w-2xl px-4;
+.app-modal-dialog {
+  @apply w-full px-4;
 }
 
-.people-details-dialog .cdk-dialog-container {
+.app-modal-dialog-wide {
+  @apply max-w-2xl;
+}
+
+.app-modal-dialog-narrow {
+  @apply max-w-md;
+}
+
+.app-modal-dialog .cdk-dialog-container {
   @apply bg-transparent shadow-none p-0 outline-none;
 }
 
-.people-details-dialog .cdk-dialog-container:focus,
-.people-details-dialog .cdk-dialog-container:focus-visible {
+.app-modal-dialog .cdk-dialog-container:focus,
+.app-modal-dialog .cdk-dialog-container:focus-visible {
   outline: none;
 }
