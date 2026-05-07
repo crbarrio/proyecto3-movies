@@ -1,0 +1,21 @@
+<div class="app-modal-shell {{ shellClass() }}">
+  <div class="flex shrink-0 items-center justify-between border-b border-white/10 px-6 py-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{{ eyebrow() }}</p>
+      <h2 class="text-lg font-semibold text-white">{{ title() }}</h2>
+    </div>
+    <button
+      type="button"
+      class="rounded-full border border-white/10 p-2 text-slate-300 transition hover:cursor-pointer hover:border-white/20 hover:bg-white/5 hover:text-white"
+      (click)="onClose()"
+      aria-label="Close modal">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+  </div>
+
+  <div [class]="bodyClass()">
+    <ng-content></ng-content>
+  </div>
+</div>

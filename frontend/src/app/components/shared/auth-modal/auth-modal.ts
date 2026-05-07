@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { Router } from '@angular/router';
 import { LoginForm } from "../../movies/login-form/login-form";
 import { RegisterForm } from "../../movies/register-form/register-form";
+import ModalShell from "../modal-shell/modal-shell";
 
 type AuthMode = 'login' | 'register';
 
@@ -12,7 +13,7 @@ type AuthModalData = {
 
 @Component({
   selector: 'app-auth-modal',
-  imports: [LoginForm, RegisterForm],
+  imports: [LoginForm, RegisterForm, ModalShell],
   templateUrl: './auth-modal.html',
   styleUrl: './auth-modal.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

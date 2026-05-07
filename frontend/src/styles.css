@@ -38,3 +38,27 @@
 .app-modal-dialog .cdk-dialog-container:focus-visible {
   outline: none;
 }
+
+.app-modal-shell {
+  @apply mx-auto flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 text-slate-200 shadow-lg;
+}
+
+.app-modal-shell-narrow {
+  @apply max-w-md;
+}
+
+.app-modal-shell-wide {
+  @apply max-w-2xl max-h-[85vh];
+}
+
+.app-modal-shell-body-default {
+  @apply px-6 py-8 md:px-8;
+}
+
+.app-modal-shell-body-form {
+  @apply space-y-6 px-6 py-8 md:px-8;
+}
+
+.app-modal-shell-body-scroll {
+  @apply flex min-h-0 flex-1 flex-col overflow-hidden;
+}
