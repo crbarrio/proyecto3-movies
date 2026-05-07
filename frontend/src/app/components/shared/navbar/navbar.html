@@ -19,7 +19,7 @@
   <!-- Search Bar & Trailing Actions -->
   <div class="flex items-center gap-4">
     <!-- Login button -->
-    <button class="primary-button">
+    <button class="primary-button" type="button" [routerLink]="[{ outlets: { modal: ['login'] } }]">
       Login
     </button>
 

@@ -1,8 +1,13 @@
 
-<div class="font-sans bg-zinc-900 text-slate-200 antialiased min-h-screen flex flex-col m-auto">
+<div class="app-layout">
+
     <app-navbar></app-navbar>
-    <main class="w-full max-w-7xl mx-auto px-4 grow flex-1 pt-24 pb-16 flex flex-col gap-4">
+
+    <main class="app-main">
         <router-outlet></router-outlet>
     </main>
+
+    <router-outlet name="modal"></router-outlet>
+
     <app-footer></app-footer>
 </div>

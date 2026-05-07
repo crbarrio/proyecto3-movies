@@ -5,10 +5,12 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../../services/movie.service';
 import { DatePipe } from '@angular/common';
 import { environment } from '../../../../environments/environment';
+import ModalShell from "../../shared/modal-shell/modal-shell";
 
 @Component({
   selector: 'app-people-details',
-  imports: [DatePipe],
+  standalone: true,
+  imports: [DatePipe, ModalShell],
   templateUrl: './people-details.html',
 })
 export class PeopleDetails {
@@ -24,6 +26,18 @@ export class PeopleDetails {
     params: () => ({ personId: this.personId }),
     stream: ({ params }) => this.movieService.getPersonById(params.personId),
   });
+
+  get modalTitle() {
+    if (this.personDetailsResource.hasValue()) {
+      return this.personDetailsResource.value().name;
+    }
+
+    if (this.personDetailsResource.isLoading()) {
+      return 'Loading person';
+    }
+
+    return 'Person details';
+  }
 
   close() {
     this.dialogRef.close();

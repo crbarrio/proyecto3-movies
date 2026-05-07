@@ -1,0 +1,26 @@
+<app-modal-shell
+	[eyebrow]="'Account'"
+	[title]="title()"
+	[shellClass]="'app-modal-shell-narrow'"
+	[bodyClass]="'app-modal-shell-body-form'"
+	(close)="close()">
+	<div class="space-y-3">
+		@if (mode() === 'login') {
+			<app-login-form></app-login-form>
+		} @else {
+			<app-register-form></app-register-form>
+		}
+	</div>
+
+	<div class="rounded-2xl border border-white/10 bg-zinc-950/40 p-4 text-sm text-slate-400">
+		<p>
+			{{ alternatePrompt() }}
+			<button
+				type="button"
+				class="ml-1 font-semibold text-white transition hover:cursor-pointer hover:text-indigo-400"
+				(click)="openAlternateMode()">
+				{{ alternateActionLabel() }}
+			</button>
+		</p>
+	</div>
+</app-modal-shell>
