@@ -1,15 +1,25 @@
-<form class="space-y-5" action="#">
+<form class="space-y-5" (submit)="onSubmit($event)" novalidate>
     <div class="space-y-1.5">
         <label for="register-name" class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
             Name
         </label>
         <input
+            [attr.aria-invalid]="isFieldInvalid('name')"
+            [attr.aria-describedby]="isFieldInvalid('name') ? 'register-name-error' : null"
+            [class.form-input-invalid]="isFieldInvalid('name')"
+            [formField]="registerForm.name"
             id="register-name"
-            name="name"
             type="text"
             placeholder="Your full name"
             class="w-full rounded-xl border border-white/10 bg-zinc-950/70 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
         />
+        @if (isFieldInvalid('name')) {
+            <p id="register-name-error" class="text-red-500 text-sm" role="alert">
+                @for (error of registerForm.name().errors(); track $index) {
+                    {{ error.message }}
+                }
+            </p>
+        }
     </div>
 
     <div class="space-y-1.5">
@@ -17,12 +27,22 @@
             Email
         </label>
         <input
+            [attr.aria-invalid]="isFieldInvalid('email')"
+            [attr.aria-describedby]="isFieldInvalid('email') ? 'register-email-error' : null"
+            [class.form-input-invalid]="isFieldInvalid('email')"
+            [formField]="registerForm.email"
             id="register-email"
-            name="email"
             type="email"
             placeholder="name@company.com"
             class="w-full rounded-xl border border-white/10 bg-zinc-950/70 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
         />
+        @if (isFieldInvalid('email')) {
+            <p id="register-email-error" class="text-red-500 text-sm" role="alert">
+                @for (error of registerForm.email().errors(); track $index) {
+                    {{ error.message }}
+                }
+            </p>
+        }
     </div>
 
     <div class="space-y-1.5">
@@ -30,12 +50,22 @@
             Password
         </label>
         <input
+            [attr.aria-invalid]="isFieldInvalid('password')"
+            [attr.aria-describedby]="isFieldInvalid('password') ? 'register-password-error' : null"
+            [class.form-input-invalid]="isFieldInvalid('password')"
+            [formField]="registerForm.password"
             id="register-password"
-            name="password"
             type="password"
             placeholder="Create a secure password"
             class="w-full rounded-xl border border-white/10 bg-zinc-950/70 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
         />
+        @if (isFieldInvalid('password')) {
+            <p id="register-password-error" class="text-red-500 text-sm" role="alert">
+                @for (error of registerForm.password().errors(); track $index) {
+                    {{ error.message }}
+                }
+            </p>
+        }
     </div>
 
     <button
