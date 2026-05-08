@@ -1,5 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+jest.mock('./auth.service', () => ({
+  AuthService: class AuthService {},
+}));
+
+jest.mock('./auth.guard', () => ({
+  AuthGuard: class AuthGuard {
+    canActivate() {
+      return true;
+    }
+  },
+}));
+
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -7,6 +21,15 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: {
+            signIn: jest.fn(),
+            signUp: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);

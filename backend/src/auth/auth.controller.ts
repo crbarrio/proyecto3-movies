@@ -2,12 +2,11 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@n
 import { SignInDto } from './dtos/sign-in.dto';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
-import { UsersService } from 'src/users/users.service';
 import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -18,7 +17,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('register')
   signUp(@Body() signUpDto: CreateUserDto) {
-    return this.usersService.signUp(signUpDto.email, signUpDto.password, signUpDto.name);
+    return this.authService.signUp(signUpDto);
   }
 
   @Post('logout')

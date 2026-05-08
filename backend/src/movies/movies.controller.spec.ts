@@ -8,7 +8,7 @@ describe('MoviesController', () => {
   let authGuard: { canActivate: jest.Mock };
   let moviesService: {
     findMoviesByUserId: jest.Mock;
-    updateMovieForUser: jest.Mock;
+    upsertMovieForUser: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -18,7 +18,7 @@ describe('MoviesController', () => {
 
     moviesService = {
       findMoviesByUserId: jest.fn(),
-      updateMovieForUser: jest.fn(),
+      upsertMovieForUser: jest.fn(),
     };
 
     const moduleBuilder = Test.createTestingModule({
@@ -43,11 +43,12 @@ describe('MoviesController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should return movies by user id', () => {
+  it('should return movies for the authenticated user', () => {
     const expectedMovies = [{ id: 1, userId: 1, movieId: 1 }];
     moviesService.findMoviesByUserId.mockReturnValue(expectedMovies);
+    const request = { user: { sub: 1, name: 'Test User 1' } } as any;
 
-    const result = controller.findMoviesByUserId(1);
+    const result = controller.findMoviesByUserId(request);
 
     expect(moviesService.findMoviesByUserId).toHaveBeenCalledWith(1);
     expect(result).toEqual(expectedMovies);
@@ -65,11 +66,11 @@ describe('MoviesController', () => {
       score: 9,
     };
 
-    moviesService.updateMovieForUser.mockReturnValue(updatedMovie);
+    moviesService.upsertMovieForUser.mockReturnValue(updatedMovie);
 
-    const result = controller.updateMovieForUser(1, updateMovieUserDto, request);
+    const result = controller.upsertMovieForUser(1, updateMovieUserDto, request);
 
-    expect(moviesService.updateMovieForUser).toHaveBeenCalledWith(
+    expect(moviesService.upsertMovieForUser).toHaveBeenCalledWith(
       1,
       1,
       updateMovieUserDto,

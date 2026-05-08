@@ -1,46 +1,21 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import type { MovieUser } from '../interfaces/movieUser.interface';
-
-type UpdateMovieUserValues = {
-    favorite?: boolean;
-    watched?: boolean;
-    score?: number;
-};
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { MovieUser } from 'src/generated/prisma/client';
+import { UpdateMovieUserDto } from './dtos/update-movie-user.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class MoviesService {
-    private readonly moviesUser: MovieUser[] = [
-        {
-            id: 1,
-            userId: 1,
-            movieId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            score: 8,
-            favorite: true,
-            watched: true,
-        },
-        {
-            id: 2,
-            userId: 1,
-            movieId: 2,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            score: 7,
-            favorite: false,
-            watched: true,
-        },
-    ];
+    constructor(private readonly prisma: PrismaService) {}
 
-    findMoviesByUserId(userId: number): MovieUser[] {
-        return this.moviesUser.filter(movie => movie.userId === userId);
+    async findMoviesByUserId(userId: number): Promise<MovieUser[]> {
+        return this.prisma.movieUser.findMany({ where: { userId } });
     }
 
-    updateMovieForUser(
+    async upsertMovieForUser(
         userId: number,
         movieId: number,
-        updateMovieUserDto: UpdateMovieUserValues,
-    ): MovieUser {
+        updateMovieUserDto: UpdateMovieUserDto,
+    ): Promise<MovieUser> {
         if (
             updateMovieUserDto.favorite === undefined &&
             updateMovieUserDto.watched === undefined &&
@@ -49,25 +24,25 @@ export class MoviesService {
             throw new BadRequestException('At least one field must be provided');
         }
 
-        const movieIndex = this.moviesUser.findIndex(
-            (movie) => movie.userId === userId && movie.movieId === movieId,
-        );
-
-        if (movieIndex === -1) {
-            throw new NotFoundException('Movie not found for user');
-        }
-
-        const currentMovie = this.moviesUser[movieIndex];
-        const updatedMovie: MovieUser = {
-            ...currentMovie,
-            favorite: updateMovieUserDto.favorite ?? currentMovie.favorite,
-            watched: updateMovieUserDto.watched ?? currentMovie.watched,
-            score: updateMovieUserDto.score ?? currentMovie.score,
-            updatedAt: new Date(),
+        const movieUserData = {
+            favorite: updateMovieUserDto.favorite,
+            watched: updateMovieUserDto.watched,
+            score: updateMovieUserDto.score,
         };
 
-        this.moviesUser[movieIndex] = updatedMovie;
-
-        return updatedMovie;
+        return this.prisma.movieUser.upsert({
+            where: {
+                userId_movieId: {
+                    userId,
+                    movieId,
+                },
+            },
+            update: movieUserData,
+            create: {
+                userId,
+                movieId,
+                ...movieUserData,
+            },
+        });
     }
 }

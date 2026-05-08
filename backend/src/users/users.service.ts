@@ -1,46 +1,18 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { User } from 'src/interfaces/user.interface';
+import { Injectable } from '@nestjs/common';
+import { Prisma, User } from 'src/generated/prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
-    {
-      id: 1,
-      name: 'Test User 1',
-      email: 'test1@mail.com',
-      password: 'password1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 2,
-      name: 'Test User 2',
-      email: 'test2@mail.com',
-      password: 'password2',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
 
-  findOneByEmail(email: string): User | undefined {
-    return this.users.find((user) => user.email === email);
+  constructor(private prisma: PrismaService) {}
+
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } });
   }
 
-  signUp(email: string, password: string, name: string): User {
-    const existingUser = this.findOneByEmail(email);
-    if (existingUser) {
-      throw new ConflictException('A user with this email already exists');
-    }
-
-    const newUser: User = {
-      id: this.users.length + 1,
-      name,
-      email,
-      password,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.users.push(newUser);
-    return newUser;
+  async signUp(data: Prisma.UserCreateInput): Promise<User> {
+    return this.prisma.user.create({ data });
   }
 }

@@ -86,7 +86,7 @@ docker-compose.yml
 - User
 - MovieUser
 
-## 5. [ ] Ejecutar migraciones
+## 5. [X] Ejecutar migraciones
 
 ```bash
 npx prisma migrate dev
@@ -97,22 +97,13 @@ npx prisma migrate dev
 # [ ] FASE 4 — AUTENTICACIÓN
 
 ## Implementar
-- Register
-- Login
-- Password hashing
-- JWT
-- Protected routes
+- Register -> OK
+- Login -> OK
+- Password hashing -> argon2
+- JWT-> OK
+- Protected routes -> OK
 
-## Qué aprenderás aquí
-- Guards
-- JWT
-- Hashing
-- Interceptors
-- DTO validation
-- Arquitectura NestJS
-- Seguridad básica
 
----
 
 # [ ] FASE 5 — CAMBIO API TMBD A BACKEND
 
