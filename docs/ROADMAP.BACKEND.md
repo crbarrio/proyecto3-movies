@@ -64,29 +64,29 @@ POST   /ratings/:movieId
 
 # ORDEN DEL BACKEND
 
-## 1. [ ] Creación del proyecto NestJS dentro del monrepo
+## 1. [X] Creación del proyecto NestJS dentro del monrepo
 
 ```bash
 nest new backend
 ```
 
-## 2. [ ] Instalar Prisma
+## 2. [X] Instalar Prisma
 
 ```bash
 npm install prisma --save-dev
 npm install @prisma/client
 ```
 
-## 3. [ ] Configurar PostgreSQL
+## 3. [X] Configurar PostgreSQL
 
 docker-compose.yml
 
-## 4. [] Crear schema Prisma
+## 4. [X] Crear schema Prisma
 
 - User
 - MovieUser
 
-## 5. [ ] Ejecutar migraciones
+## 5. [X] Ejecutar migraciones
 
 ```bash
 npx prisma migrate dev
@@ -97,22 +97,13 @@ npx prisma migrate dev
 # [ ] FASE 4 — AUTENTICACIÓN
 
 ## Implementar
-- Register
-- Login
-- Password hashing
-- JWT
-- Protected routes
+- Register -> OK
+- Login -> OK
+- Password hashing -> argon2
+- JWT-> OK
+- Protected routes -> OK
 
-## Qué aprenderás aquí
-- Guards
-- JWT
-- Hashing
-- Interceptors
-- DTO validation
-- Arquitectura NestJS
-- Seguridad básica
 
----
 
 # [ ] FASE 5 — CAMBIO API TMBD A BACKEND
 
