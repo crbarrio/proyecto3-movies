@@ -94,7 +94,7 @@ npx prisma migrate dev
 
 ---
 
-# [ ] FASE 4 — AUTENTICACIÓN
+# [X] FASE 4 — AUTENTICACIÓN
 
 ## Implementar
 - Register -> OK
@@ -102,7 +102,7 @@ npx prisma migrate dev
 - Password hashing -> argon2
 - JWT-> OK
 - Protected routes -> OK
-
+- Cablear formularios de registro y login
 
 
 # [ ] FASE 5 — CAMBIO API TMBD A BACKEND

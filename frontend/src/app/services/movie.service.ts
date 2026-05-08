@@ -1,10 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { map, Observable, tap } from 'rxjs';
-import { TMDBMovieDetails, TMDBMovieResponse } from '../interfaces/tmdb-movie.interface';
+import { Observable, tap } from 'rxjs';
 import { MovieDetails, MovieResponse } from '../interfaces/movie.interface';
-import { MovieMapper } from '../mappers/movie-details.mapper';
 import { TMDBPerson } from '../interfaces/person.interface';
 
 @Injectable({
@@ -13,28 +11,24 @@ import { TMDBPerson } from '../interfaces/person.interface';
 export class MovieService {
 
   private http = inject(HttpClient);
-  private tmdbApiUrl = environment.tmdbApiUrl;
-  private tmdbAccessToken = environment.tmdbAccessToken;
+  private ApiUrl = environment.ApiUrl;
 
   getTrendingMovies(page: number, genreId: number | null): Observable<MovieResponse> {
-    const endpoint = genreId === null ? 'trending/movie/week' : 'discover/movie';
     const params = new URLSearchParams({ page: String(page) });
 
     if (genreId !== null) {
-      params.set('with_genres', String(genreId));
+      params.set('genreId', String(genreId));
     }
 
-    return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/${endpoint}?${params.toString()}`, {
+    return this.http.get<MovieResponse>(`${this.ApiUrl}/movies/trending?${params.toString()}`, {
       headers: {
-        Authorization: `Bearer ${this.tmdbAccessToken}`,
         'Content-Type': 'application/json;charset=utf-8',
       },
     }).pipe(
-      map(resp => MovieMapper.mapTMDBMovieResposeToMoiveResponse(resp)),
       tap({
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
-            console.error('Unauthorized: Invalid TMDB access token.');
+            console.error('Unauthorized request.');
             return;
           }
 
@@ -46,17 +40,15 @@ export class MovieService {
 
   searchMovies(query: string, page: number): Observable<MovieResponse> {
     const params = new URLSearchParams({ query, page: String(page) });
-    return this.http.get<TMDBMovieResponse>(`${this.tmdbApiUrl}/search/movie?${params.toString()}`, {
+    return this.http.get<MovieResponse>(`${this.ApiUrl}/movies/search?${params.toString()}`, {
       headers: {
-        Authorization: `Bearer ${this.tmdbAccessToken}`,
         'Content-Type': 'application/json;charset=utf-8',
       },
     }).pipe(
-      map(resp => MovieMapper.mapTMDBMovieResposeToMoiveResponse(resp)),
       tap({
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
-            console.error('Unauthorized: Invalid TMDB access token.');
+            console.error('Unauthorized request.');
             return;
           }
 
@@ -67,17 +59,15 @@ export class MovieService {
   }
 
   getMovieById(movieId: string): Observable<MovieDetails> {
-    return this.http.get<TMDBMovieDetails>(`${this.tmdbApiUrl}/movie/${movieId}?append_to_response=credits,similar,videos`, {
+    return this.http.get<MovieDetails>(`${this.ApiUrl}/movies/${movieId}`, {
       headers: {
-        Authorization: `Bearer ${this.tmdbAccessToken}`,
         'Content-Type': 'application/json;charset=utf-8',
       },
     }).pipe(
-      map( (resp => MovieMapper.mapTMDBMovieDetailsToMovie(resp)) ),
       tap({
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
-            console.error('Unauthorized: Invalid TMDB access token.');
+            console.error('Unauthorized request.');
             return;
           }
 
@@ -89,16 +79,15 @@ export class MovieService {
 
 
   getPersonById(personId: string): Observable<TMDBPerson> {
-    return this.http.get<TMDBPerson>(`${this.tmdbApiUrl}/person/${personId}`, {
+    return this.http.get<TMDBPerson>(`${this.ApiUrl}/movies/people/${personId}`, {
       headers: {
-        Authorization: `Bearer ${this.tmdbAccessToken}`,
         'Content-Type': 'application/json;charset=utf-8',
       },
     }).pipe(
       tap({
         error: (error: HttpErrorResponse) => {
           if (error.status === 401) {
-            console.error('Unauthorized: Invalid TMDB access token.');
+            console.error('Unauthorized request.');
             return;
           }
 
