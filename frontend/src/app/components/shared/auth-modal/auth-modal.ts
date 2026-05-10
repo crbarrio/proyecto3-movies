@@ -32,9 +32,9 @@ export default class AuthModal {
   protected readonly isSubmitting = signal(false);
   protected readonly title = computed(() => this.mode() === 'login' ? 'Welcome back' : 'Create account');
   protected readonly alternatePrompt = computed(() => this.mode() === 'login'
-    ? '¿Aun no tienes cuenta?'
-    : '¿Ya tienes cuenta?');
-  protected readonly alternateActionLabel = computed(() => this.mode() === 'login' ? 'Registrate' : 'Inicia sesion');
+    ? 'Not a member yet?'
+    : 'Already have an account?');
+  protected readonly alternateActionLabel = computed(() => this.mode() === 'login' ? 'Sign up' : 'Log in');
   protected readonly alternateMode = computed<AuthMode>(() => this.mode() === 'login' ? 'register' : 'login');
 
   protected close() {
