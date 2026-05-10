@@ -12,6 +12,10 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
+  async findOneById(id: number): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
+
   async signUp(data: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user.create({ data });
   }

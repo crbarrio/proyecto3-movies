@@ -18,7 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: CreateUserDto): Promise<SafeUser> {
+  async signUp(signUpDto: CreateUserDto): Promise<{ user: SafeUser; token: string }> {
     const existingUser = await this.usersService.findOneByEmail(signUpDto.email);
 
     if (existingUser) {
@@ -32,10 +32,10 @@ export class AuthService {
       name: signUpDto.name,
     });
 
-    return this.toSafeUser(user);
+    return this.signIn(user.email, signUpDto.password);
   }
 
-  async signIn(email: string, pass: string): Promise<{ accessToken: string }> {
+  async signIn(email: string, pass: string): Promise<{ user: SafeUser; token: string }> {
     const user = await this.usersService.findOneByEmail(email);
 
     if (!user) {
@@ -50,7 +50,23 @@ export class AuthService {
 
     const payload = { sub: user.id, name: user.name };
     return {
-      accessToken: await this.jwtService.signAsync(payload),
+      user: this.toSafeUser(user),
+      token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async checkStatus(userId: number): Promise<{ user: SafeUser; token: string }> {
+    const user = await this.usersService.findOneById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const payload = { sub: user.id, name: user.name };
+
+    return {
+      user: this.toSafeUser(user),
+      token: await this.jwtService.signAsync(payload),
     };
   }
 

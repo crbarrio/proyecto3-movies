@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { email, form, FormField, minLength, required, submit } from '@angular/forms/signals';
 
 interface RegisterFormData {
@@ -14,6 +14,8 @@ interface RegisterFormData {
   styleUrl: './register-form.css',
 })
 export class RegisterForm {
+  isSubmitting = input(false);
+
   registerModel = signal<RegisterFormData>({
     name: '',
     email: '',
@@ -40,6 +42,10 @@ export class RegisterForm {
 
   onSubmit(event: Event) {
     event.preventDefault();
+
+    if (this.isSubmitting()) {
+      return;
+    }
 
     submit(this.registerForm, async () => {
       this.formSubmited.emit(this.registerModel());

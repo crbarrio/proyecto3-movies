@@ -4,31 +4,39 @@
       Movies
     </a>
     <div class="hidden md:flex items-center gap-6">
-      <!-- Active Nav Item based on intent 'Movie Exploration' -> 'Explore' -->
-      <a class="text-indigo-500 text-lg font-semibold border-b-2 border-indigo-500 pb-1 flex flex-col scale-95 active:scale-90 transition-all"
-        href="#">
+      <a class="app-nav-link"
+        href="#"
+        routerLink="/"
+        routerLinkActive="app-nav-link-active" [routerLinkActiveOptions]="{ exact: true }">
         Explore
       </a>
-      <!-- Inactive Nav Item -->
-      <a class="text-zinc-400 text-lg font-semibold hover:text-zinc-100  hover:bg-zinc-800/50 transition-all duration-300 px-3 py-1 rounded-md scale-95 active:scale-90"
-        href="#">
-        Favorites
-      </a>
+      @if (authService.authStatus() === 'authenticated') {
+        <a class="app-nav-link"
+          href="#"
+          routerLink="/profile"
+          routerLinkActive="app-nav-link-active" [routerLinkActiveOptions]="{ exact: true }">
+          My Profile
+        </a>
+      }
+      
     </div>
   </div>
-  <!-- Search Bar & Trailing Actions -->
-  <div class="flex items-center gap-4">
-    <!-- Login button -->
-    <button class="primary-button" type="button" [routerLink]="[{ outlets: { modal: ['login'] } }]">
-      Login
-    </button>
 
-    <!-- Profile Image -->
-    <button
-      class="w-8 h-8 rounded-full overflow-hidden border border-zinc-800 hover:border-indigo-500 transition-colors scale-95 active:scale-90">
-      <img alt="User profile" class="w-full h-full object-cover"
-        data-alt="A close up portrait of a person representing a user profile picture, softly lit against a dark background, embodying a sophisticated cinematic mood."
-        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ_pWIQ7-vV342fjOY0lrjRIy8U4Xk2I2fKh16N9nfqkEydgoHIdLlqCvYFA3ajcfDEIURuOKE8O0nY0PJ7ZuhzJtLRq33qwu_Du9Lb8pG-zFu-SKLcAY-qkuZ-teJXMVJrlgjHgFIBVI8fK6wOUkM21V7z3oUWBtNt626FjR5XoW2woLFLdOoiqXddszcLTNRZu0-6DkwuOxQMThuVp0-dIZg7GWRCXPHW7viyWahqkG5xPwQwJlVUmX9TlpeT9eTDcPHwcWwEg" />
-    </button>
+  <div class="flex items-center gap-4">
+    @if (authService.authStatus() === 'authenticated') {
+      <span class="text-slate-200 font-semibold text-lg" >{{ authService.user()?.name }}</span>
+      <button class="primary-button" type="button" (click)="authService.logout()">
+        Logout
+      </button>
+    } @else if (authService.authStatus() === 'non-authenticated') {
+      <button class="primary-button" type="button" [routerLink]="[{ outlets: { modal: ['login'] } }]">
+        Login
+      </button>
+    } @else {
+      <span>...</span>
+    }
+    
+
+
   </div>
 </nav>

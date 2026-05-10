@@ -71,9 +71,9 @@ Referencia de diseno:
 
 ## Autenticación y usuario
 
-- [ ] Implementar sistema de autenticación.
-- [ ] Crear modal de login y formulario con signals y validaciones
-- [ ] Probar protección de vistas.
+- [X] Implementar sistema de autenticación.
+- [X] Crear modal de login y formulario con signals y validaciones
+- [X] Probar protección de vistas.
 - [ ] Crear sección de usuario protegida tras autenticación:  Datos personales, listado favoritos
 - [ ] Implementar CRUD de favoritos.
 - [ ] Implementar puntuaciones.
