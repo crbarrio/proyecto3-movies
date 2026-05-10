@@ -47,4 +47,7 @@ export interface Movie {
     genres: number[];
     overview: string;
     posterPath?: string | null;
+    favorite?: boolean;
+    watched?: boolean;
+    score?: number;
 }

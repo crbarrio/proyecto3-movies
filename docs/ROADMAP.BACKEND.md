@@ -35,26 +35,76 @@ MovieUser:
 
 ---
 
-# [ ] FASE 2 — DISEÑO DE LA API
+# [X] FASE 2 — DISEÑO DE LA API
 
 ## Endpoints
 
 ```txt
 POST   /auth/register
 POST   /auth/login
+POST   /auth/logout
+GET    /auth/me
 
-GET    /users/me
-
-GET    /favorites
-POST   /favorites/:movieId
-DELETE /favorites/:movieId
-
-GET    /ratings
-POST   /ratings/:movieId
+GET    /movies/trending?page=:page&genreId=:genreId
+GET    /movies/search?query=:query&page=:page
+GET    /movies/people/:personId
+GET    /movies/:movieId
+GET    /movies
+PUT    /movies/:movieId
 ```
+
+## Body esperado en POST y PUT
+
+### POST /auth/register
+
+```json
+{
+  "name": "Ada Lovelace",
+  "email": "ada@example.com",
+  "password": "12345678"
+}
+```
+
+Reglas:
+- `name`: string obligatorio
+- `email`: string obligatorio con formato email valido
+- `password`: string obligatorio de minimo 8 caracteres
+
+### POST /auth/login
+
+```json
+{
+  "email": "ada@example.com",
+  "password": "12345678"
+}
+```
+
+Reglas:
+- `email`: string obligatorio con formato email valido
+- `password`: string obligatorio
+
+### POST /auth/logout
+
+No espera body.
+
+### PUT /movies/:movieId
+
+```json
+{
+  "favorite": true,
+  "watched": true,
+  "score": 8
+}
+```
+
+Reglas:
+- `favorite`: boolean opcional
+- `watched`: boolean opcional
+- `score`: integer opcional entre 0 y 10
+- el backend exige que venga al menos uno de estos campos
 ---
 
-# [ ] FASE 3 — INICIO DEL BACKEND
+# [X] FASE 3 — INICIO DEL BACKEND
 
 ## Stack
 - NestJS
@@ -102,94 +152,84 @@ npx prisma migrate dev
 - Password hashing -> argon2
 - JWT-> OK
 - Protected routes -> OK
-- Cablear formularios de registro y login
+- Cablear formularios de registro y login -> OK
 
 
-# [ ] FASE 5 — CAMBIO API TMBD A BACKEND
+# [~] FASE 5 — CAMBIO API TMDB A BACKEND
 
-## Implementar
-- Mover todas las llamadas de api de front a api propia
-- Crear modulo tmdb en back
-- Ofrecer resultados combinados de base de datos propia y tmbd dependiendo de si usuario tiene token JWT o no -> Endpoint híbrido.
+## Estado actual
+- [X] Crear modulo `tmdb` en backend
+- [X] Exponer endpoints propios desde `movies.controller.ts`
+- [X] Mover al backend las consultas principales de trending, búsqueda, detalle y persona
+- [ ] Enriquecer respuestas TMDB con datos `MovieUser` del usuario autenticado
 
 ```
 movies/
  ├── movies.controller.ts
  ├── movies.service.ts
- ├── tmdb.service.ts
-
+ └── tmdb.service.ts
 ```
 
-Controller
-```typescript
-@Get('trending')
-getTrending(@Req() req) {
-  return this.moviesService.getTrending(req.user?.id);
-}
-```
-
-Service
-```typescript
-async getTrending(userId?: string) {
-
-  const movies = await this.tmdbService.getTrending();
-
-  if (!userId) {
-    return movies;
-  }
-
-  const favorites =
-    await this.favoritesService.getUserFavorites(userId);
-
-  const ratings =
-    await this.ratingsService.getUserRatings(userId);
-
-  return movies.map(movie => ({
-    ...movie,
-    isFavorite: favorites.includes(movie.id),
-    myRating: ratings[movie.id] ?? null
-  }));
-}
-```
-
-DTO
-```typescript
-type Movie = {
-  id: number;
-  title: string;
-
-  isFavorite?: boolean;
-  myRating?: number | null;
-}
-```
-
-
-# [ ] FASE 6 — FAVORITOS
-
-## Endpoints
+## Endpoints TMDB expuestos por backend
 
 ```txt
-POST /favorites/:movieId
-DELETE /favorites/:movieId
-GET /favorites
+GET /movies/trending?page=:page&genreId=:genreId
+GET /movies/search?query=:query&page=:page
+GET /movies/:movieId
+GET /movies/people/:personId
+```
+
+## Nota
+Actualmente `MoviesService` consulta TMDB y mapea la respuesta al formato interno, pero todavia no mezcla esos resultados con favoritos, watched o score del usuario autenticado.
+
+
+# [X] FASE 6 — ESTADO DE PELÍCULAS POR USUARIO
+
+## Modelo actual
+La aplicación no expone recursos separados de `favorites` y `ratings`. Todo el estado del usuario sobre una película se guarda en la entidad `MovieUser`.
+
+Campos disponibles:
+- `favorite`
+- `watched`
+- `score`
+
+## Endpoints implementados
+
+```txt
+GET /movies
+PUT /movies/:movieId
+```
+
+## Ejemplo de payload
+
+```json
+{
+  "favorite": true,
+  "watched": true,
+  "score": 8
+}
 ```
 
 ## Qué aprenderás aquí
 - Relaciones en base de datos
 - Prisma ORM
 - Ownership data
-- REST real
-- Queries relacionales
+- Upsert sobre clave compuesta `userId + movieId`
+- Rutas protegidas con JWT
 
 ---
 
-# [ ] FASE 7 — RATINGS
+# [X] FASE 7 — FAVORITOS Y RATINGS
 
-## Objetivo
-Permitir a los usuarios:
-- puntuar películas
-- actualizar puntuaciones
-- consultar puntuaciones
+## Estado actual
+Favoritos y ratings ya están resueltos dentro de `MovieUser`.
+
+Permite a los usuarios:
+- marcar una película como favorita
+- marcar una película como vista
+- puntuar películas de 0 a 10
+- actualizar cualquiera de esos campos con un único `PUT /movies/:movieId`
+- consultar su colección con `GET /movies`
 
 ---
 

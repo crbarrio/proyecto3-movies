@@ -67,6 +67,9 @@ export interface TMDBMovieDetails {
     credits:               Credits;
     similar:               Similar;
     videos:                Videos;
+    favorite?: boolean;
+    watched?: boolean;
+    score?: number;
 }
 
 export interface BelongsToCollection {

@@ -2,13 +2,14 @@
   "name": "proyecto3-movies",
   "private": true,
   "scripts": {
-    "db:up": "docker compose up -d",
+    "db:up": "docker compose up -d --wait db",
     "db:down": "docker compose down",
     "db:logs": "docker compose logs db",
     "db:reset": "docker compose down -v && docker compose up -d",
+    "db:init": "npm run db:up && npm --prefix backend run db:init",
     "front": "npm --prefix frontend start",
     "back": "npm --prefix backend start",
-    "dev": "npm run db:up && concurrently \"npm run front\" \"npm run back\"",
+    "dev": "npm run db:init && concurrently \"npm run front\" \"npm run back\"",
     "dev:no-db": "concurrently \"npm run front\" \"npm run back\""
   },
   "devDependencies": {

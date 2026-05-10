@@ -16,6 +16,7 @@ import { Request } from 'express';
 import type { MovieUser } from 'src/generated/prisma/client';
 import type { MovieDetails, MovieResponse } from 'src/interfaces/movie.interface';
 import { AuthGuard } from '../auth/auth.guard';
+import { OptionalAuthGuard } from '../auth/optional-auth.guard';
 import { MoviesService } from './movies.service';
 import { UpdateMovieUserDto } from './dtos/update-movie-user.dto';
 
@@ -31,24 +32,29 @@ export class MoviesController {
     constructor(readonly moviesService: MoviesService) {}
 
     @HttpCode(HttpStatus.OK)
+    @UseGuards(OptionalAuthGuard)
     @Get('trending')
     async getTrendingMovies(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
         @Query('genreId') genreId?: string,
+        @Req() request?: AuthenticatedRequest
     ): Promise<MovieResponse> {
         return this.moviesService.getTrendingMovies(
             page,
             genreId === undefined ? null : Number(genreId),
+            request?.user?.sub ?? null,
         );
     }
 
     @HttpCode(HttpStatus.OK)
+    @UseGuards(OptionalAuthGuard)
     @Get('search')
     async searchMovies(
         @Query('query') query: string,
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+        @Req() request?: AuthenticatedRequest
     ): Promise<MovieResponse> {
-        return this.moviesService.searchMovies(query, page);
+        return this.moviesService.searchMovies(query, page, request?.user?.sub ?? null);
     }
 
     @HttpCode(HttpStatus.OK)
@@ -60,11 +66,13 @@ export class MoviesController {
     }
 
     @HttpCode(HttpStatus.OK)
+    @UseGuards(OptionalAuthGuard)
     @Get(':movieId')
     async getMovieById(
         @Param('movieId', ParseIntPipe) movieId: number,
+        @Req() request?: AuthenticatedRequest
     ): Promise<MovieDetails> {
-        return this.moviesService.getMovieById(movieId);
+        return this.moviesService.getMovieById(movieId, request?.user?.sub ?? null);
     }
 
     @HttpCode(HttpStatus.OK)

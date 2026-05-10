@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { email, form, FormField, minLength, required, submit } from '@angular/forms/signals';
 
 interface LoginFormData {
@@ -12,7 +12,7 @@ interface LoginFormData {
   templateUrl: './login-form.html',
 })
 export class LoginForm {
-
+  isSubmitting = input(false);
 
   loginModel = signal<LoginFormData>({
     email: '',
@@ -39,8 +39,12 @@ export class LoginForm {
   onSubmit(event: Event) {
     event.preventDefault();
 
+    if (this.isSubmitting()) {
+      return;
+    }
+
     submit(this.loginForm, async () => {
-      this.formSubmited.emit(this.loginModel());      
+      this.formSubmited.emit(this.loginModel());   
     });
 
   }
