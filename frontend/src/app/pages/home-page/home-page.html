@@ -25,6 +25,7 @@
     [movies]="loadedMovies()"
     [isLoadingMore]="movieResource.isLoading()"
     [hasMorePages]="hasMorePages()"
-    (nextPage)="loadNextPage()">
+    (nextPage)="loadNextPage()"
+    (movieUserChanged)="onMovieUserChanged($event)">
   </app-movie-list>
 }

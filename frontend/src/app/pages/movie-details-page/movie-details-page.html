@@ -8,7 +8,7 @@
   @let directors = movie.credits?.crew ?? [];
   @let castMembers = movie.credits?.cast ?? [];
   @let trailers = movie.videos?.results ?? [];
-  @let similarMovies = movie.similar ?? [];
+  @let similarMovies = similarMoviesState() ?? [];
 
   <section class="mx-auto mt-6 flex max-w-6xl flex-col gap-10 px-4 pb-12 md:px-6">
     
@@ -82,7 +82,7 @@
       @if (similarMovies.length) {
         <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
           @for (similarMovie of similarMovies; track similarMovie.id) {
-            <app-movie-card [movie]="similarMovie"></app-movie-card>
+            <app-movie-card [movie]="similarMovie" (movieUserChanged)="onMovieUserChanged($event)"></app-movie-card>
           }
         </div>
       } @else {

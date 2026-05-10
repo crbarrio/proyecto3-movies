@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { Observable, tap } from 'rxjs';
 import { MovieDetails, MovieResponse } from '../interfaces/movie.interface';
+import { MovieUserPatch, MovieUserState, MovieWithUserState } from '../interfaces/movie-user.interface';
 import { TMDBPerson } from '../interfaces/person.interface';
 
 @Injectable({
@@ -95,6 +96,27 @@ export class MovieService {
         },
       })
     );
+  }
+
+  updateMovieUser(movieId: number, changes: MovieUserPatch): Observable<MovieUserState> {
+    return this.http.put<MovieUserState>(`${this.ApiUrl}/movies/${movieId}`, changes);
+  }
+
+  patchMovie<T extends MovieWithUserState>(movie: T, movieUser: MovieUserState): T {
+    if (movie.id !== movieUser.movieId) {
+      return movie;
+    }
+
+    return {
+      ...movie,
+      favorite: movieUser.favorite,
+      watched: movieUser.watched,
+      score: movieUser.score ?? undefined,
+    };
+  }
+
+  patchMovieCollection<T extends MovieWithUserState>(movies: T[], movieUser: MovieUserState): T[] {
+    return movies.map((movie) => this.patchMovie(movie, movieUser));
   }
 
 }

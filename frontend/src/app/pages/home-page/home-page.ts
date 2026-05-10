@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieList } from '../../components/movies/movie-list/movie-list';
+import { MovieUserChange } from '../../interfaces/movie-user.interface';
 import { MovieService } from '../../services/movie.service';
 import { GenreSelector } from "../../components/movies/genre-selector/genre-selector";
 import { SearchInput } from "../../components/movies/search-input/search-input";
@@ -98,6 +99,17 @@ export default class HomePage {
     }
 
     this.resetMovieList();
+  }
+
+  onMovieUserChanged(event: MovieUserChange) {
+    this.movieService.updateMovieUser(event.movieId, event.changes).subscribe({
+      next: (movieUser) => {
+        this.loadedMovies.update((movies) => this.movieService.patchMovieCollection(movies, movieUser));
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
 }
