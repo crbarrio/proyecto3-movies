@@ -19,42 +19,18 @@
             </div>
         </a>
         <div class="pointer-events-none absolute top-3 w-full px-3 flex justify-between items-start z-10">
+            <span
+                class="min-w-8 h-8 rounded-full border border-white/80 bg-white/70 px-2 text-indigo-500 shadow-md shadow-black/25 backdrop-blur-md flex items-center justify-center text-xs font-bold leading-none">
+                @if (movie().averageScore !== undefined && movie().averageScore !== null) {
+                    {{ movie().averageScore }}
+                } @else {
+                    N/A
+                }
+            </span>
+
             @if (isAuthenticated()) {
-                <span
-                    class="min-w-8 h-8 rounded-full px-2 bg-zinc-900/50 backdrop-blur-md text-neutral-200 shadow-md flex items-center justify-center text-xs font-bold leading-none">
-                    @if (movie().score !== undefined && movie().score !== null) {
-                        {{ movie().score }}
-                    } @else {
-                        N/A
-                    }
-                </span>
-
-                <div class="pointer-events-auto flex items-center gap-2">
-                    <button
-                        type="button"
-                        (click)="onToggleWatched($event)"
-                        [attr.aria-pressed]="movie().watched ? 'true' : 'false'"
-                        [attr.aria-label]="movie().watched ? 'Mark ' + movie().title + ' as not watched' : 'Mark ' + movie().title + ' as watched'"
-                        class="w-8 h-8 rounded-full bg-zinc-900/50 backdrop-blur-md text-neutral-200 hover:bg-neutral-800 transition-colors shadow-md flex items-center justify-center"
-                        [class.text-emerald-300]="movie().watched">
-                        <span class="material-symbols-outlined text-[14px] leading-none">
-                            {{ movie().watched ? 'visibility' : 'visibility_off' }}
-                        </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        (click)="onToggleFavorite($event)"
-                        [attr.aria-pressed]="movie().favorite ? 'true' : 'false'"
-                        [attr.aria-label]="movie().favorite ? 'Remove ' + movie().title + ' from favorites' : 'Add ' + movie().title + ' to favorites'"
-                        class="w-8 h-8 rounded-full bg-zinc-900/50 backdrop-blur-md text-neutral-200 hover:bg-neutral-800 transition-colors shadow-md flex items-center justify-center"
-                        [class.text-red-400]="movie().favorite">
-                        @if (movie().favorite) {
-                            <span class="material-symbols-outlined text-[14px] leading-none" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;">favorite</span>
-                        } @else {
-                            <span class="material-symbols-outlined text-[14px] leading-none" style="font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;">favorite</span>
-                        }
-                    </button>
+                <div class="pointer-events-auto">
+                    <app-movie-user-actions [movie]="movie()" (movieUserChanged)="onMovieUserChanged($event)"></app-movie-user-actions>
                 </div>
             }
         </div>

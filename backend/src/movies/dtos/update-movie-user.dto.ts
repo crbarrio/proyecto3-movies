@@ -11,7 +11,7 @@ export class UpdateMovieUserDto {
 
   @IsOptional()
   @IsInt()
-  @Min(0)
-  @Max(10)
+  @Min(1)
+  @Max(5)
   score?: number;
 }

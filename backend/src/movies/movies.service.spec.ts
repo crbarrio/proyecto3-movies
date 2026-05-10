@@ -3,18 +3,21 @@ import { BadRequestException } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TmdbService } from 'src/tmdb/tmdb.service';
-import { TMDBMovieResponse } from 'src/interfaces/tmdb-movie.interface';
+import { TMDBMovieDetails, TMDBMovieResponse } from 'src/interfaces/tmdb-movie.interface';
 
 describe('MoviesService', () => {
   let service: MoviesService;
   let prisma: {
     movieUser: {
       findMany: jest.Mock;
+      groupBy: jest.Mock;
       upsert: jest.Mock;
     };
   };
   let tmdbService: {
     getTrendingMovies: jest.Mock;
+    searchMovies: jest.Mock;
+    getMovieById: jest.Mock;
   };
 
   const testUserId = 1;
@@ -28,12 +31,15 @@ describe('MoviesService', () => {
     prisma = {
       movieUser: {
         findMany: jest.fn(),
+        groupBy: jest.fn(),
         upsert: jest.fn(),
       },
     };
 
     tmdbService = {
       getTrendingMovies: jest.fn(),
+      searchMovies: jest.fn(),
+      getMovieById: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -66,7 +72,7 @@ describe('MoviesService', () => {
         movieId: existingMovieId,
         favorite: true,
         watched: true,
-        score: 8,
+        score: 4,
       },
       {
         id: 2,
@@ -74,7 +80,7 @@ describe('MoviesService', () => {
         movieId: secondMovieId,
         favorite: false,
         watched: true,
-        score: 7,
+        score: 3,
       },
     ];
 
@@ -137,8 +143,12 @@ describe('MoviesService', () => {
         movieId: trendingMovieId,
         favorite: true,
         watched: true,
-        score: 8,
+        score: 4,
       },
+    ]);
+    prisma.movieUser.groupBy.mockResolvedValue([
+      { movieId: trendingMovieId, _avg: { score: 4 } },
+      { movieId: unmatchedTrendingMovieId, _avg: { score: 3.5 } },
     ]);
 
     tmdbService.getTrendingMovies.mockResolvedValue(tmdbMovieResponse);
@@ -158,15 +168,27 @@ describe('MoviesService', () => {
         score: true,
       },
     });
+    expect(prisma.movieUser.groupBy).toHaveBeenCalledWith({
+      by: ['movieId'],
+      where: {
+        movieId: { in: [trendingMovieId, unmatchedTrendingMovieId] },
+        score: { not: null },
+      },
+      _avg: {
+        score: true,
+      },
+    });
     expect(result.results).toEqual([
       expect.objectContaining({
         id: trendingMovieId,
+        averageScore: 4,
         favorite: true,
         watched: true,
-        score: 8,
+        score: 4,
       }),
       expect.objectContaining({
         id: unmatchedTrendingMovieId,
+        averageScore: 3.5,
         favorite: undefined,
         watched: undefined,
         score: undefined,
@@ -202,18 +224,155 @@ describe('MoviesService', () => {
     };
 
     tmdbService.getTrendingMovies.mockResolvedValue(tmdbMovieResponse);
+    prisma.movieUser.groupBy.mockResolvedValue([
+      { movieId: trendingMovieId, _avg: { score: 4.5 } },
+    ]);
 
     const result = await service.getTrendingMovies(1, null, null);
 
     expect(prisma.movieUser.findMany).not.toHaveBeenCalled();
+    expect(prisma.movieUser.groupBy).toHaveBeenCalledWith({
+      by: ['movieId'],
+      where: {
+        movieId: { in: [trendingMovieId] },
+        score: { not: null },
+      },
+      _avg: {
+        score: true,
+      },
+    });
     expect(result.results[0]).toEqual(
       expect.objectContaining({
         id: trendingMovieId,
+        averageScore: 4.5,
       }),
     );
     expect(result.results[0]).not.toHaveProperty('favorite');
     expect(result.results[0]).not.toHaveProperty('watched');
     expect(result.results[0]).not.toHaveProperty('score');
+  });
+
+  it('should enrich movie details with average score and the authenticated user score', async () => {
+    const tmdbMovieDetails = {
+      adult: false,
+      backdrop_path: '/backdrop-main.jpg',
+      belongs_to_collection: null,
+      budget: 0,
+      genres: [{ id: 28, name: 'Action' }],
+      homepage: '',
+      id: trendingMovieId,
+      imdb_id: 'tt1234567',
+      origin_country: ['US'],
+      original_language: 'en',
+      original_title: 'Matched movie',
+      overview: 'Matched overview',
+      popularity: 10,
+      poster_path: '/poster-main.jpg',
+      production_companies: [],
+      production_countries: [],
+      release_date: new Date('2026-01-01'),
+      revenue: 0,
+      runtime: 120,
+      spoken_languages: [],
+      status: 'Released',
+      tagline: '',
+      title: 'Matched movie',
+      video: false,
+      vote_average: 7.5,
+      vote_count: 100,
+      credits: {
+        cast: [],
+        crew: [
+          {
+            adult: false,
+            gender: 1,
+            id: 1,
+            known_for_department: 'Directing',
+            name: 'Director One',
+            original_name: 'Director One',
+            popularity: 1,
+            profile_path: '/director.jpg',
+            credit_id: 'credit-1',
+            department: 'Directing',
+            job: 'Director',
+          },
+        ],
+      },
+      similar: {
+        page: 1,
+        results: [
+          {
+            adult: false,
+            backdrop_path: '/backdrop-similar.jpg',
+            id: secondMovieId,
+            title: 'Similar movie',
+            original_title: 'Similar movie',
+            overview: 'Similar overview',
+            poster_path: '/poster-similar.jpg',
+            media_type: 'movie',
+            original_language: 'en',
+            genre_ids: [12],
+            popularity: 9,
+            release_date: new Date('2026-01-02'),
+            softcore: false,
+            video: false,
+            vote_average: 6.8,
+            vote_count: 50,
+          },
+        ],
+        total_pages: 1,
+        total_results: 1,
+      },
+      videos: {
+        results: [],
+      },
+    } as TMDBMovieDetails;
+
+    tmdbService.getMovieById.mockResolvedValue(tmdbMovieDetails);
+    prisma.movieUser.findMany.mockResolvedValue([
+      {
+        movieId: trendingMovieId,
+        favorite: true,
+        watched: true,
+        score: 5,
+      },
+    ]);
+    prisma.movieUser.groupBy.mockResolvedValue([
+      { movieId: trendingMovieId, _avg: { score: 4.5 } },
+      { movieId: secondMovieId, _avg: { score: 3 } },
+    ]);
+
+    const result = await service.getMovieById(trendingMovieId, testUserId);
+
+    expect(tmdbService.getMovieById).toHaveBeenCalledWith(trendingMovieId);
+    expect(prisma.movieUser.findMany).toHaveBeenCalledWith({
+      where: {
+        userId: testUserId,
+        movieId: { in: [trendingMovieId, secondMovieId] },
+      },
+      select: {
+        movieId: true,
+        watched: true,
+        favorite: true,
+        score: true,
+      },
+    });
+    expect(result).toEqual(
+      expect.objectContaining({
+        id: trendingMovieId,
+        averageScore: 4.5,
+        score: 5,
+        favorite: true,
+        watched: true,
+        similar: [
+          expect.objectContaining({
+            id: secondMovieId,
+            averageScore: 3,
+            score: undefined,
+          }),
+        ],
+      }),
+    );
   });
 
   it('should update a movie for an existing user movie relation', async () => {
@@ -223,14 +382,14 @@ describe('MoviesService', () => {
       movieId: existingMovieId,
       favorite: false,
       watched: true,
-      score: 9,
+      score: 5,
     };
 
     prisma.movieUser.upsert.mockResolvedValue(updatedMovie);
 
     const result = await service.upsertMovieForUser(testUserId, existingMovieId, {
       favorite: false,
-      score: 9,
+      score: 5,
     });
 
     expect(prisma.movieUser.upsert).toHaveBeenCalledWith({
@@ -243,20 +402,20 @@ describe('MoviesService', () => {
       update: {
         favorite: false,
         watched: undefined,
-        score: 9,
+        score: 5,
       },
       create: {
         userId: testUserId,
         movieId: existingMovieId,
         favorite: false,
         watched: undefined,
-        score: 9,
+        score: 5,
       },
     });
     expect(result.userId).toBe(testUserId);
     expect(result.movieId).toBe(existingMovieId);
     expect(result.favorite).toBe(false);
-    expect(result.score).toBe(9);
+    expect(result.score).toBe(5);
     expect(result.watched).toBe(true);
   });
 

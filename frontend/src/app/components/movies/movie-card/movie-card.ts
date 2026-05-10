@@ -2,13 +2,14 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment.development';
 import { TMDB_GENRES_BY_ID } from '../../../catalogs/tmdb-genres';
+import { MovieUserActions } from '../movie-user-actions/movie-user-actions';
 import { Movie } from '../../../interfaces/movie.interface';
 import { MovieUserChange } from '../../../interfaces/movie-user.interface';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-movie-card',
-  imports: [RouterLink],
+  imports: [RouterLink, MovieUserActions],
   templateUrl: './movie-card.html',
 })
 export class MovieCard {
@@ -27,27 +28,7 @@ export class MovieCard {
     }).slice(0, 2)
   );
 
-  onToggleFavorite(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    this.movieUserChanged.emit({
-      movieId: this.movie().id,
-      changes: {
-        favorite: !this.movie().favorite,
-      },
-    });
-  }
-
-  onToggleWatched(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    this.movieUserChanged.emit({
-      movieId: this.movie().id,
-      changes: {
-        watched: !this.movie().watched,
-      },
-    });
+  onMovieUserChanged(event: MovieUserChange) {
+    this.movieUserChanged.emit(event);
   }
 }

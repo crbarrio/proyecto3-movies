@@ -23,10 +23,12 @@ export default class MovieDetailsPage {
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  
 
   baseImageUrl = environment.tmdbImageBaseUrl;
 
   movieId = input.required<string>();
+  movieDetailsState = signal<MovieDetails | null>(null);
   similarMoviesState = signal<MovieDetails['similar']>([]);
 
   movieResource = rxResource<MovieDetails, { movieId: string }>({
@@ -38,6 +40,7 @@ export default class MovieDetailsPage {
     effect(() => {
       const movie = this.movieResource.value();
 
+      this.movieDetailsState.set(movie ?? null);
       this.similarMoviesState.set(movie?.similar ?? []);
     });
   }
@@ -59,6 +62,13 @@ export default class MovieDetailsPage {
   onMovieUserChanged(event: MovieUserChange) {
     this.movieService.updateMovieUser(event.movieId, event.changes).subscribe({
       next: (movieUser) => {
+        this.movieDetailsState.update((movie) => {
+          if (!movie) {
+            return movie;
+          }
+
+          return this.movieService.patchMovie(movie, movieUser);
+        });
         this.similarMoviesState.update((movies) => this.movieService.patchMovieCollection(movies ?? [], movieUser));
       },
       error: (error) => {

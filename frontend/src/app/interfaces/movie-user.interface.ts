@@ -19,3 +19,6 @@ export interface MovieUserState {
 }
 
 export type MovieWithUserState = Pick<Movie, 'id' | 'favorite' | 'watched' | 'score'>;
+export type MovieUserActionTarget = Pick<Movie, 'id' | 'title' | 'favorite' | 'watched'>;
+export type MovieScoreTarget = Pick<Movie, 'id' | 'title' | 'score'>;
+

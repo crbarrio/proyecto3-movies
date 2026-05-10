@@ -1,0 +1,22 @@
+<div class="flex items-center gap-2">
+    <div class="flex items-center gap-1" [attr.aria-label]="movie().score ? 'Your rating: ' + movie().score + ' out of 5' : 'No rating yet'" [attr.role]="editable() ? null : 'img'">
+        @for (star of stars; track star) {
+            @if (editable()) {
+                <button
+                    type="button"
+                    (click)="onSelectScore(star, $event)"
+                    [attr.aria-label]="movie().score === star ? 'Clear rating ' + star + ' out of 5 for ' + movie().title : 'Set rating to ' + star + ' out of 5 for ' + movie().title"
+                    class="flex items-center justify-center transition-colors"
+                    [class.text-amber-300]="isSelected(star)"
+                    [class.text-neutral-500]="!isSelected(star)"
+                    [class.hover:text-amber-300]="!isSelected(star)">
+                    <span class="material-symbols-outlined leading-none" [class]="sizeClass()" [style.font-variation-settings]="getStarVariationSettings(star)">star</span>
+                </button>
+            } @else {
+                <span class="flex items-center justify-center" [class.text-amber-300]="isSelected(star)" [class.text-neutral-500]="!isSelected(star)">
+                    <span class="material-symbols-outlined leading-none" [class]="sizeClass()" [style.font-variation-settings]="getStarVariationSettings(star)">star</span>
+                </span>
+            }
+        }
+    </div>
+</div>

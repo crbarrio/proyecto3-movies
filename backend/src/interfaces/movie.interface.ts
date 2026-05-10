@@ -8,6 +8,7 @@ export interface MovieDetails {
     genres?: { name: string }[];
     overview?: string;
     posterPath?: string | null;
+    averageScore?: number;
     credits?: {
         cast?: {
             id: number;
@@ -50,6 +51,7 @@ export interface Movie {
     genres: number[];
     overview: string;
     posterPath?: string | null;
+    averageScore?: number;
     favorite?: boolean;
     watched?: boolean;
     score?: number;
