@@ -49,7 +49,7 @@
 }
 
 .app-modal-shell {
-  @apply mx-auto flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 text-slate-200 shadow-lg;
+  @apply mx-auto flex min-h-0 w-full flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 text-slate-200 shadow-lg;
 }
 
 .app-modal-shell-narrow {
@@ -57,7 +57,7 @@
 }
 
 .app-modal-shell-wide {
-  @apply max-w-2xl max-h-[85vh];
+  @apply max-h-[85vh] max-w-2xl;
 }
 
 .app-modal-shell-body-default {
@@ -69,7 +69,7 @@
 }
 
 .app-modal-shell-body-scroll {
-  @apply flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden;
+  @apply flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto;
 }
 
 

@@ -3,6 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TmdbService } from 'src/tmdb/tmdb.service';
+import { TMDBPersonDetails } from 'src/interfaces/person.interface';
 import { TMDBMovieDetails, TMDBMovieResponse } from 'src/interfaces/tmdb-movie.interface';
 
 describe('MoviesService', () => {
@@ -18,6 +19,7 @@ describe('MoviesService', () => {
     getTrendingMovies: jest.Mock;
     searchMovies: jest.Mock;
     getMovieById: jest.Mock;
+    getPersonById: jest.Mock;
   };
 
   const testUserId = 1;
@@ -42,6 +44,7 @@ describe('MoviesService', () => {
       getTrendingMovies: jest.fn(),
       searchMovies: jest.fn(),
       getMovieById: jest.fn(),
+      getPersonById: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -64,6 +67,54 @@ describe('MoviesService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('should return all person movies using the incoming TMDB order', async () => {
+    const personDetails = {
+      adult: false,
+      also_known_as: [],
+      biography: 'Bio',
+      birthday: new Date('1970-01-01'),
+      deathday: null,
+      gender: 2,
+      homepage: null,
+      id: 31,
+      imdb_id: 'nm0000158',
+      known_for_department: 'Acting',
+      name: 'Actor',
+      movie_credits: {
+        cast: [
+          { id: 1, title: 'First', original_title: 'First', release_date: '2018-01-01', popularity: 10, poster_path: null, backdrop_path: null, adult: false, credit_id: '1', genre_ids: [28], original_language: 'en', overview: 'Overview 1', video: false, vote_average: 7.31, vote_count: 10 },
+          { id: 2, title: 'Second', original_title: 'Second', release_date: '2024-01-01', popularity: 5, poster_path: '/second.jpg', backdrop_path: null, adult: false, credit_id: '2', genre_ids: [18], original_language: 'en', overview: 'Overview 2', video: false, vote_average: 6.19, vote_count: 8 },
+          { id: 3, title: 'Third', original_title: 'Third', release_date: '2021-01-01', popularity: 5, poster_path: null, backdrop_path: null, adult: false, credit_id: '3', genre_ids: [], original_language: 'en', overview: 'Overview 3', video: false, vote_average: 5, vote_count: 7 },
+          { id: 4, title: 'Fourth', original_title: 'Fourth', release_date: null, popularity: 50, poster_path: null, backdrop_path: null, adult: false, credit_id: '4', genre_ids: [35], original_language: 'en', overview: 'Overview 4', video: false, vote_average: 8, vote_count: 3 },
+          { id: 5, title: 'Fifth', original_title: 'Fifth', release_date: '2023-01-01', popularity: 4, poster_path: null, backdrop_path: null, adult: false, credit_id: '5', genre_ids: [12], original_language: 'en', overview: 'Overview 5', video: false, vote_average: 4.44, vote_count: 5 },
+          { id: 6, title: 'Sixth', original_title: 'Sixth', release_date: '2020-01-01', popularity: 4, poster_path: null, backdrop_path: null, adult: false, credit_id: '6', genre_ids: [16], original_language: 'en', overview: 'Overview 6', video: false, vote_average: 9.04, vote_count: 4 },
+          { id: 7, title: 'Seventh', original_title: 'Seventh', release_date: '2022-01-01', popularity: 4, poster_path: null, backdrop_path: null, adult: false, credit_id: '7', genre_ids: [80], original_language: 'en', overview: 'Overview 7', video: false, vote_average: 3.21, vote_count: 2 },
+        ],
+        crew: [],
+      },
+      place_of_birth: 'Somewhere',
+      popularity: 10,
+      profile_path: '/profile.jpg',
+    } satisfies TMDBPersonDetails;
+
+    tmdbService.getPersonById.mockResolvedValue(personDetails);
+
+    const result = await service.getPersonById(31);
+
+    expect(tmdbService.getPersonById).toHaveBeenCalledWith(31);
+    expect(result.filmography).toHaveLength(7);
+    expect(result.filmography.map(({ id }) => id)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(result.filmography[1]).toEqual({
+      id: 2,
+      title: 'Second',
+      releaseDate: '2024-01-01',
+      genres: [18],
+      overview: 'Overview 2',
+      posterPath: '/second.jpg',
+      averageScore: 6.2,
+    });
   });
 
   it('should return movies by user id', async () => {

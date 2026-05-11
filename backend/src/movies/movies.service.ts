@@ -2,10 +2,15 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { MovieUser, Prisma } from 'src/generated/prisma/client';
 import { Movie, MovieDetails, MovieResponse, UserMovieLists } from 'src/interfaces/movie.interface';
 import {
+    Person,
+    TMDBPersonDetails,
+} from 'src/interfaces/person.interface';
+import {
     TMDBMovieDetails,
     TMDBMovieResponse,
 } from 'src/interfaces/tmdb-movie.interface';
 import { MovieDetailsMapper } from 'src/movies/mappers/movie-details.mapper';
+import { PersonDetailsMapper } from 'src/movies/mappers/person-details.mapper';
 import { UpdateMovieUserDto } from './dtos/update-movie-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TmdbService } from 'src/tmdb/tmdb.service';
@@ -76,8 +81,10 @@ export class MoviesService {
         };
     }
 
-    async getPersonById(personId: number) {
-        return this.tmdbService.getPersonById(personId);
+    async getPersonById(personId: number): Promise<Person> {
+        const personDetails = await this.tmdbService.getPersonById(personId) as TMDBPersonDetails;
+
+        return PersonDetailsMapper.mapTMDBPersonDetailsToPerson(personDetails);
     }
 
     async findMoviesByUserId(userId: number): Promise<MovieUser[]> {

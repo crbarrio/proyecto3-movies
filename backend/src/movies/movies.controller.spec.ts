@@ -13,6 +13,7 @@ describe('MoviesController', () => {
   let authGuard: { canActivate: jest.Mock };
   let moviesService: {
     getTrendingMovies: jest.Mock;
+    getPersonById: jest.Mock;
     findMoviesByUserId: jest.Mock;
     getUserMovieLists: jest.Mock;
     upsertMovieForUser: jest.Mock;
@@ -25,6 +26,7 @@ describe('MoviesController', () => {
 
     moviesService = {
       getTrendingMovies: jest.fn(),
+      getPersonById: jest.fn(),
       findMoviesByUserId: jest.fn(),
       getUserMovieLists: jest.fn(),
       upsertMovieForUser: jest.fn(),
@@ -118,6 +120,21 @@ describe('MoviesController', () => {
 
     expect(moviesService.getTrendingMovies).toHaveBeenCalledWith(1, null, null);
     expect(result).toEqual(trendingResponse);
+  });
+
+  it('should return person details for the requested person id', async () => {
+    const expectedPerson = {
+      id: 31,
+      name: 'Actor',
+      filmography: [],
+    };
+
+    moviesService.getPersonById.mockResolvedValue(expectedPerson);
+
+    const result = await controller.getPersonById(31);
+
+    expect(moviesService.getPersonById).toHaveBeenCalledWith(31);
+    expect(result).toEqual(expectedPerson);
   });
 
   it('should update a movie for the authenticated user', async () => {

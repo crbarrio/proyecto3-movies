@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment.development';
 import { Observable, tap } from 'rxjs';
 import { MovieDetails, MovieResponse, UserMovieLists } from '../interfaces/movie.interface';
 import { MovieUserPatch, MovieUserState, MovieWithUserState } from '../interfaces/movie-user.interface';
-import { TMDBPerson } from '../interfaces/person.interface';
+import { Person } from '../interfaces/person.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -79,8 +79,8 @@ export class MovieService {
   }
 
 
-  getPersonById(personId: string): Observable<TMDBPerson> {
-    return this.http.get<TMDBPerson>(`${this.ApiUrl}/movies/people/${personId}`, {
+  getPersonById(personId: string): Observable<Person> {
+    return this.http.get<Person>(`${this.ApiUrl}/movies/people/${personId}`, {
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },

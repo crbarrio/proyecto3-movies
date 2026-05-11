@@ -33,7 +33,9 @@ export class TmdbService {
 	}
 
 	async getPersonById(personId: number) {
-		return this.request(`person/${personId}`);
+		return this.request(
+			`person/${personId}?append_to_response=movie_credits`,
+		);
 	}
 
 	private async request(path: string) {
