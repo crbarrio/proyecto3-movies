@@ -19,6 +19,10 @@
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-400">{{ genreNames() }}</p>
             }
 
+            <p class="text-sm font-medium text-neutral-400">
+                {{ movie().releaseDate ? (movie().releaseDate | date:'longDate') : 'Release date unknown' }}
+            </p>
+
             @if (movie().overview) {
             <p class="max-w-3xl text-base leading-7 text-neutral-300 md:text-lg">{{ movie().overview }}</p>
             } @else {
@@ -27,12 +31,10 @@
             }
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-4 sm:grid-cols-2" [class.xl:grid-cols-4]="isAuthenticated()" [class.xl:grid-cols-2]="!isAuthenticated()">
             <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
-                <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Release</p>
-                <p class="mt-2 text-lg font-semibold text-white">
-                    {{ movie().releaseDate ? (movie().releaseDate | date:'longDate') : 'Unknown' }}
-                </p>
+                <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Average Score</p>
+                <p class="mt-2 text-lg font-semibold text-white">{{ movie().averageScore ?? 'N/A' }}</p>
             </div>
 
             <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
@@ -40,6 +42,23 @@
                 <p class="mt-2 text-lg font-semibold text-white">{{ movie().runtime ? movie().runtime + ' min' : 'Not
                     available' }}</p>
             </div>
+
+            @if (isAuthenticated()) {
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+                <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Your Score</p>
+                <div class="mt-2">
+                    <app-movie-score [movie]="movie()" [editable]="true" [sizeClass]="'text-[20px]'" (movieUserChanged)="onMovieScoreChanged($event)"></app-movie-score>
+                </div>
+            </div>
+
+            <div class="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4">
+                <p class="text-xs uppercase tracking-[0.25em] text-neutral-500">Your Status</p>
+                <div class="mt-2">
+                    <app-movie-user-actions [movie]="movie()" (movieUserChanged)="onMovieUserChanged($event)"></app-movie-user-actions>
+                </div>
+            </div>
+
+            }
         </div>
 
         @if (directors().length) {

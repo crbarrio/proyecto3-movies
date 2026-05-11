@@ -100,7 +100,7 @@ describe('MoviesController', () => {
   });
 
   it('should update a movie for the authenticated user', async () => {
-    const updateMovieUserDto = { favorite: true, score: 9 };
+    const updateMovieUserDto = { favorite: true, score: 5 };
     const request: AuthenticatedMoviesRequest = {
       user: { sub: 1, name: 'Test User 1' },
     } as AuthenticatedMoviesRequest;
@@ -110,7 +110,7 @@ describe('MoviesController', () => {
       movieId: 1,
       favorite: true,
       watched: true,
-      score: 9,
+      score: 5,
     };
 
     moviesService.upsertMovieForUser.mockResolvedValue(updatedMovie);

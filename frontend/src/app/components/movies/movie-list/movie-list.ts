@@ -1,6 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { MovieCard } from '../movie-card/movie-card';
 import { Movie } from '../../../interfaces/movie.interface';
+import { MovieUserChange } from '../../../interfaces/movie-user.interface';
 
 @Component({
   selector: 'app-movie-list',
@@ -13,9 +14,13 @@ export class MovieList {
   hasMorePages = input(true);
 
   nextPage = output<void>();
+  movieUserChanged = output<MovieUserChange>();
 
   onLoadMore() {
     this.nextPage.emit();
   }
 
+  onMovieUserChanged(event: MovieUserChange) {
+    this.movieUserChanged.emit(event);
+  }
 }

@@ -1,30 +1,40 @@
-<div class="flex flex-col gap-1 cursor-pointer" [routerLink]="['/movie', movie().id]">
+<div class="flex flex-col gap-1 cursor-pointer">
     <div class="group relative aspect-2/3 rounded-xl overflow-hidden shadow-lg border border-neutral-800">
-        @if (movie().posterPath) {
-        <img alt="{{ movie().title }} Movie Poster"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            src="{{ baseImageUrl }}{{ movie().posterPath }}" />
-        } @else {
-        <div
-            class="flex aspect-2/3 items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-neutral-950 p-4 text-center text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
-            No poster
-        </div>
-        }
-        <div
-            class="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300">
-        </div>
-        <div class="absolute top-3 w-full px-3 flex justify-between items-start z-10">
+        <a
+            class="absolute inset-0 block"
+            [attr.aria-label]="'Open details for ' + movie().title"
+            [routerLink]="['/movie', movie().id]">
+            @if (movie().posterPath) {
+            <img alt="{{ movie().title }} Movie Poster"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                src="{{ baseImageUrl }}{{ movie().posterPath }}" />
+            } @else {
             <div
-                class="bg-indigo-500/20 backdrop-blur-md border border-indigo-500/30 px-2 py-1 rounded text-indigo-500 leading-4 font-bold flex items-center gap-1 shadow-md">
-                <span class="material-symbols-outlined text-[14px] fill">star</span>
-                8.9
+                class="flex aspect-2/3 h-full items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-neutral-950 p-4 text-center text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
+                No poster
             </div>
-            <button
-                class="w-8 h-8 rounded-full bg-zinc-900/50 backdrop-blur-md flex items-center justify-center hover:text-red-800 hover:bg-neutral-800 transition-colors shadow-md">
-                <span class="material-symbols-outlined">favorite</span>
-            </button>
+            }
+            <div
+                class="pointer-events-none absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+            </div>
+        </a>
+        <div class="pointer-events-none absolute top-3 w-full px-3 flex justify-between items-start z-10">
+            <span
+                class="min-w-8 h-8 rounded-full border border-white/80 bg-white/70 px-2 text-indigo-500 shadow-md shadow-black/25 backdrop-blur-md flex items-center justify-center text-xs font-bold leading-none">
+                @if (movie().averageScore !== undefined && movie().averageScore !== null) {
+                    {{ movie().averageScore }}
+                } @else {
+                    N/A
+                }
+            </span>
+
+            @if (isAuthenticated()) {
+                <div class="pointer-events-auto">
+                    <app-movie-user-actions [movie]="movie()" (movieUserChanged)="onMovieUserChanged($event)"></app-movie-user-actions>
+                </div>
+            }
         </div>
     </div>
-    <h3 class="text-indigo-500 leading-4 font-bold tracking-wider uppercase">{{movie().title}}</h3>
+    <h3 class="text-indigo-500 leading-4 font-bold tracking-wider uppercase" [routerLink]="['/movie', movie().id]">{{movie().title}}</h3>
     <span class="font-h3 text-h3 leading-tight drop-shadow-lg">{{ genreNames().join(', ') }}</span>
 </div>

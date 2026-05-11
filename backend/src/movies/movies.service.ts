@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { MovieUser } from 'src/generated/prisma/client';
+import { MovieUser, Prisma } from 'src/generated/prisma/client';
 import { Movie, MovieDetails, MovieResponse } from 'src/interfaces/movie.interface';
 import {
     TMDBMovieDetails,
@@ -11,6 +11,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { TmdbService } from 'src/tmdb/tmdb.service';
 
 type UserMovieState = Pick<MovieUser, 'watched' | 'favorite' | 'score'>;
+type MovieMetadata = {
+    userMovieStateById: Map<number, UserMovieState>;
+    averageScoreByMovieId: Map<number, number>;
+};
 
 @Injectable()
 export class MoviesService {
@@ -32,21 +36,8 @@ export class MoviesService {
             MovieDetailsMapper.mapTMDBMovieResponseToMovieResponse(
                 tmdbMovieResponse,
             );
-        const userMovieStateById = await this.getUserMovieStateByMovieIds(
-            userId,
-            movieResponse.results.map((movie) => movie.id),
-        );
 
-        return {
-            ...movieResponse,
-            results: movieResponse.results.map((movie) =>
-                this.enrichMovieWithUserState(
-                    movie,
-                    userMovieStateById.get(movie.id),
-                    userId !== null,
-                ),
-            ),
-        };
+        return this.enrichMovieResponse(movieResponse, userId);
     }
 
     async searchMovies(query: string, page: number, userId: number | null): Promise<MovieResponse> {
@@ -58,21 +49,8 @@ export class MoviesService {
             MovieDetailsMapper.mapTMDBMovieResponseToMovieResponse(
                 tmdbMovieResponse,
             );
-        const userMovieStateById = await this.getUserMovieStateByMovieIds(
-            userId,
-            movieResponse.results.map((movie) => movie.id),
-        );
 
-        return {
-            ...movieResponse,
-            results: movieResponse.results.map((movie) =>
-                this.enrichMovieWithUserState(
-                    movie,
-                    userMovieStateById.get(movie.id),
-                    userId !== null,
-                ),
-            ),
-        };
+        return this.enrichMovieResponse(movieResponse, userId);
     }
 
     async getMovieById(movieId: number, userId: number | null): Promise<MovieDetails> {
@@ -80,12 +58,21 @@ export class MoviesService {
             movieId,
         ) as TMDBMovieDetails;
         const movieDetails = MovieDetailsMapper.mapTMDBMovieDetailsToMovie(tmdbMovieDetails);
-        const userMovieStateById = await this.getUserMovieStateByMovieIds(userId, [movieId]);
+        const relatedMovieIds = [movieId, ...(movieDetails.similar?.map((movie) => movie.id) ?? [])];
+        const movieMetadata = await this.getMovieMetadataByIds(userId, relatedMovieIds);
 
-        return this.enrichMovieWithUserState(
-            movieDetails,
-            userMovieStateById.get(movieId),
-        );
+        return {
+            ...this.enrichMovie(
+                movieDetails,
+                movieMetadata.averageScoreByMovieId.get(movieId),
+                movieMetadata.userMovieStateById.get(movieId),
+            ),
+            similar: this.enrichMovies(
+                movieDetails.similar ?? [],
+                movieMetadata,
+                userId !== null,
+            ),
+        };
     }
 
     async getPersonById(personId: number) {
@@ -131,6 +118,40 @@ export class MoviesService {
         });
     }
 
+    private async enrichMovieResponse(
+        movieResponse: MovieResponse,
+        userId: number | null,
+    ): Promise<MovieResponse> {
+        const movieMetadata = await this.getMovieMetadataByIds(
+            userId,
+            movieResponse.results.map((movie) => movie.id),
+        );
+
+        return {
+            ...movieResponse,
+            results: this.enrichMovies(
+                movieResponse.results,
+                movieMetadata,
+                userId !== null,
+            ),
+        };
+    }
+
+    private async getMovieMetadataByIds(
+        userId: number | null,
+        movieIds: number[],
+    ): Promise<MovieMetadata> {
+        const [userMovieStateById, averageScoreByMovieId] = await Promise.all([
+            this.getUserMovieStateByMovieIds(userId, movieIds),
+            this.getAverageScoreByMovieIds(movieIds),
+        ]);
+
+        return {
+            userMovieStateById,
+            averageScoreByMovieId,
+        };
+    }
+
     private async getUserMovieStateByMovieIds(
         userId: number | null,
         movieIds: number[],
@@ -157,18 +178,67 @@ export class MoviesService {
         );
     }
 
-    private enrichMovieWithUserState<T extends Movie | MovieDetails>(
+    private async getAverageScoreByMovieIds(movieIds: number[]): Promise<Map<number, number>> {
+        if (movieIds.length === 0) {
+            return new Map<number, number>();
+        }
+
+        const groupByArgs = {
+            by: ['movieId'],
+            where: {
+                movieId: { in: movieIds },
+                score: { not: null },
+            },
+            _avg: {
+                score: true,
+            },
+        } satisfies Prisma.MovieUserGroupByArgs;
+
+        const groupedScores = await this.prisma.movieUser.groupBy(groupByArgs);
+
+        return new Map<number, number>(
+            groupedScores.flatMap(({ movieId, _avg }) => {
+                const averageScore = this.normalizeAverageScore(_avg?.score);
+
+                return averageScore === undefined ? [] : [[movieId, averageScore]];
+            }),
+        );
+    }
+
+    private enrichMovies<T extends Movie | MovieDetails>(
+        movies: T[],
+        movieMetadata: MovieMetadata,
+        includeEmptyUserState = false,
+    ): T[] {
+        return movies.map((movie) =>
+            this.enrichMovie(
+                movie,
+                movieMetadata.averageScoreByMovieId.get(movie.id),
+                movieMetadata.userMovieStateById.get(movie.id),
+                includeEmptyUserState,
+            ),
+        );
+    }
+
+    private enrichMovie<T extends Movie | MovieDetails>(
         movie: T,
+        averageScore?: number,
         userMovieState?: UserMovieState,
         includeEmptyUserState = false,
     ): T {
         if (!userMovieState) {
             if (!includeEmptyUserState) {
-                return movie;
+                return averageScore === undefined
+                    ? movie
+                    : {
+                        ...movie,
+                        averageScore,
+                    };
             }
 
             return {
                 ...movie,
+                averageScore,
                 watched: undefined,
                 favorite: undefined,
                 score: undefined,
@@ -177,9 +247,18 @@ export class MoviesService {
 
         return {
             ...movie,
+            averageScore,
             watched: userMovieState.watched,
             favorite: userMovieState.favorite,
             score: userMovieState.score ?? undefined,
         };
+    }
+
+    private normalizeAverageScore(score: number | null | undefined): number | undefined {
+        if (score === null || score === undefined) {
+            return undefined;
+        }
+
+        return Number(score.toFixed(1));
     }
 }
