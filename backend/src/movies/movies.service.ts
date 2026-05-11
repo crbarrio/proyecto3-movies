@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { MovieUser, Prisma } from 'src/generated/prisma/client';
-import { Movie, MovieDetails, MovieResponse } from 'src/interfaces/movie.interface';
+import { Movie, MovieDetails, MovieResponse, UserMovieLists } from 'src/interfaces/movie.interface';
 import {
     TMDBMovieDetails,
     TMDBMovieResponse,
@@ -15,6 +15,7 @@ type MovieMetadata = {
     userMovieStateById: Map<number, UserMovieState>;
     averageScoreByMovieId: Map<number, number>;
 };
+type UserMovieListEntry = Pick<MovieUser, 'movieId' | 'favorite' | 'watched'>;
 
 @Injectable()
 export class MoviesService {
@@ -83,6 +84,34 @@ export class MoviesService {
         return await this.prisma.movieUser.findMany({ where: { userId } });
     }
 
+    async getUserMovieLists(userId: number): Promise<UserMovieLists> {
+        const userMovieEntries = await this.getUserMovieListEntries(userId);
+        const movieIds = [...new Set(userMovieEntries.map(({ movieId }) => movieId))];
+
+        if (movieIds.length === 0) {
+            return {
+                averageScore: undefined,
+                favorites: [],
+                watched: [],
+            };
+        }
+
+        const [hydratedMovies, movieMetadata] = await Promise.all([
+            this.hydrateMoviesByIds(movieIds),
+            this.getMovieMetadataByIds(userId, movieIds),
+        ]);
+
+        const moviesById = new Map<number, Movie>(
+            this.enrichMovies(hydratedMovies, movieMetadata, true).map((movie) => [movie.id, movie]),
+        );
+
+        return {
+            averageScore: this.getMovieListAverageScore(moviesById),
+            favorites: this.collectMoviesFromEntries(userMovieEntries, moviesById, 'favorite'),
+            watched: this.collectMoviesFromEntries(userMovieEntries, moviesById, 'watched'),
+        };
+    }
+
     async upsertMovieForUser(
         userId: number,
         movieId: number,
@@ -135,6 +164,26 @@ export class MoviesService {
                 userId !== null,
             ),
         };
+    }
+
+    private async getUserMovieListEntries(userId: number): Promise<UserMovieListEntry[]> {
+        return this.prisma.movieUser.findMany({
+            where: {
+                userId,
+                OR: [
+                    { favorite: true },
+                    { watched: true },
+                ],
+            },
+            orderBy: {
+                updatedAt: 'desc',
+            },
+            select: {
+                movieId: true,
+                favorite: true,
+                watched: true,
+            },
+        });
     }
 
     private async getMovieMetadataByIds(
@@ -203,6 +252,44 @@ export class MoviesService {
                 return averageScore === undefined ? [] : [[movieId, averageScore]];
             }),
         );
+    }
+
+    private async hydrateMoviesByIds(movieIds: number[]): Promise<Movie[]> {
+        return Promise.all(
+            movieIds.map(async (movieId): Promise<Movie> => {
+                const movieDetails = await this.tmdbService.getMovieById(movieId) as TMDBMovieDetails;
+
+                return MovieDetailsMapper.mapTMDBMovieDetailsToMovieSummary(movieDetails);
+            }),
+        );
+    }
+
+    private collectMoviesFromEntries(
+        userMovieEntries: UserMovieListEntry[],
+        moviesById: Map<number, Movie>,
+        flag: keyof Pick<UserMovieListEntry, 'favorite' | 'watched'>,
+    ): Movie[] {
+        return userMovieEntries.flatMap((entry) => {
+            if (!entry[flag]) {
+                return [];
+            }
+
+            const movie = moviesById.get(entry.movieId);
+            return movie ? [movie] : [];
+        });
+    }
+
+    private getMovieListAverageScore(moviesById: Map<number, Movie>): number | undefined {
+        const averageScores = [...moviesById.values()]
+            .flatMap((movie) => movie.averageScore === undefined ? [] : [movie.averageScore]);
+
+        if (averageScores.length === 0) {
+            return undefined;
+        }
+
+        const averageScore = averageScores.reduce((sum, score) => sum + score, 0) / averageScores.length;
+
+        return this.normalizeAverageScore(averageScore);
     }
 
     private enrichMovies<T extends Movie | MovieDetails>(

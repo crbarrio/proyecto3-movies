@@ -74,13 +74,13 @@ Referencia de diseno:
 - [X] Implementar sistema de autenticación.
 - [X] Crear modal de login y formulario con signals y validaciones
 - [X] Probar protección de vistas.
-- [ ] Crear sección de usuario protegida tras autenticación:  Datos personales, listado favoritos
-- [ ] Implementar CRUD de favoritos.
-- [ ] Implementar puntuaciones.
-- [ ] Mostrar opciones extra si el usuario está autenticado.
-- [ ] Permitir marcar como favorita.
-- [ ] Permitir marcar como vista.
-- [ ] Permitir puntuar.
+- [X] Crear sección de usuario protegida tras autenticación:  Datos personales, listado favoritos
+- [X] Implementar CRUD de favoritos.
+- [X] Implementar puntuaciones.
+- [X] Mostrar opciones extra si el usuario está autenticado.
+- [X] Permitir marcar como favorita.
+- [X] Permitir marcar como vista.
+- [X] Permitir puntuar -> Solo en la vista de detalles de la película
 
 
 ## Calidad

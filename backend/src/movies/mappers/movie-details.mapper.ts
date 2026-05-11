@@ -19,6 +19,19 @@ export class MovieDetailsMapper {
     };
   }
 
+  static mapTMDBMovieDetailsToMovieSummary(
+    tmdbMovieDetails: TMDBMovieDetails,
+  ): Movie {
+    return {
+      id: tmdbMovieDetails.id,
+      title: tmdbMovieDetails.title,
+      releaseDate: tmdbMovieDetails.release_date,
+      genres: tmdbMovieDetails.genres.map((genre) => genre.id),
+      overview: tmdbMovieDetails.overview,
+      posterPath: tmdbMovieDetails.poster_path,
+    };
+  }
+
   static mapTMDBMovieResponseToMovieResponse(
     tmdbResponse: TMDBMovieResponse,
   ): MovieResponse {

@@ -233,6 +233,6 @@ Permite a los usuarios:
 
 ---
 
-# [ ] FASE 8 — INTEGRACIÓN ANGULAR
+# [X] FASE 8 — INTEGRACIÓN ANGULAR
 
 Conexión frontend y backend.

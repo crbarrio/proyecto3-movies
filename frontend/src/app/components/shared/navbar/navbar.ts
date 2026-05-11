@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
@@ -9,6 +9,19 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  authService = inject(AuthService)
+  authService = inject(AuthService);
+  isMobileMenuOpen = signal(false);
 
+  toggleMobileMenu() {
+    this.isMobileMenuOpen.update((open) => !open);
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen.set(false);
+  }
+
+  logout() {
+    this.closeMobileMenu();
+    this.authService.logout();
+  }
 }

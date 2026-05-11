@@ -1,5 +1,5 @@
 <section class="w-full">
-    <h2 class="text-3xl leading-9 font-bold mb-4 border-l-6 border-indigo-500 pl-4">Trending Now</h2>
+    <h2 class="text-3xl leading-9 font-bold mb-4 border-l-6 border-indigo-500 pl-4">{{ title() }}</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         @for (movie of movies(); track movie.id) {

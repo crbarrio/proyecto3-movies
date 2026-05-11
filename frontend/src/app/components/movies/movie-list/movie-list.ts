@@ -12,6 +12,7 @@ export class MovieList {
   movies = input.required<Movie[]>();
   isLoadingMore = input(false);
   hasMorePages = input(true);
+  title = input('');
 
   nextPage = output<void>();
   movieUserChanged = output<MovieUserChange>();

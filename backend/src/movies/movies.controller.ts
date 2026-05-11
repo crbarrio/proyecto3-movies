@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import type { MovieUser } from 'src/generated/prisma/client';
-import type { MovieDetails, MovieResponse } from 'src/interfaces/movie.interface';
+import type { MovieDetails, MovieResponse, UserMovieLists } from 'src/interfaces/movie.interface';
 import { AuthGuard } from '../auth/auth.guard';
 import { OptionalAuthGuard } from '../auth/optional-auth.guard';
 import { MoviesService } from './movies.service';
@@ -63,6 +63,15 @@ export class MoviesController {
         @Param('personId', ParseIntPipe) personId: number,
     ) {
         return this.moviesService.getPersonById(personId);
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthGuard)
+    @Get('lists/me')
+    async getUserMovieLists(
+        @Req() request: AuthenticatedRequest,
+    ): Promise<UserMovieLists> {
+        return this.moviesService.getUserMovieLists(request.user.sub);
     }
 
     @HttpCode(HttpStatus.OK)

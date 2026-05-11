@@ -5,6 +5,7 @@ import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
 
 type AuthenticatedMoviesRequest = Parameters<MoviesController['findMoviesByUserId']>[0];
+type AuthenticatedMovieListsRequest = Parameters<MoviesController['getUserMovieLists']>[0];
 type OptionalTrendingRequest = Parameters<MoviesController['getTrendingMovies']>[2];
 
 describe('MoviesController', () => {
@@ -13,6 +14,7 @@ describe('MoviesController', () => {
   let moviesService: {
     getTrendingMovies: jest.Mock;
     findMoviesByUserId: jest.Mock;
+    getUserMovieLists: jest.Mock;
     upsertMovieForUser: jest.Mock;
   };
 
@@ -24,6 +26,7 @@ describe('MoviesController', () => {
     moviesService = {
       getTrendingMovies: jest.fn(),
       findMoviesByUserId: jest.fn(),
+      getUserMovieLists: jest.fn(),
       upsertMovieForUser: jest.fn(),
     };
 
@@ -62,6 +65,24 @@ describe('MoviesController', () => {
 
     expect(moviesService.findMoviesByUserId).toHaveBeenCalledWith(1);
     expect(result).toEqual(expectedMovies);
+  });
+
+  it('should return hydrated movie lists for the authenticated user', async () => {
+    const expectedLists = {
+      averageScore: 4.5,
+      favorites: [{ id: 1, title: 'Favorite Movie' }],
+      watched: [{ id: 2, title: 'Watched Movie' }],
+    };
+    const request: AuthenticatedMovieListsRequest = {
+      user: { sub: 1, name: 'Test User 1' },
+    } as AuthenticatedMovieListsRequest;
+
+    moviesService.getUserMovieLists.mockResolvedValue(expectedLists);
+
+    const result = await controller.getUserMovieLists(request);
+
+    expect(moviesService.getUserMovieLists).toHaveBeenCalledWith(1);
+    expect(result).toEqual(expectedLists);
   });
 
   it('should pass the authenticated user id to trending movies', async () => {

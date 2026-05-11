@@ -43,6 +43,12 @@ export interface MovieResponse {
     total_results: number;
 }
 
+export interface UserMovieLists {
+    averageScore?: number;
+    favorites: Movie[];
+    watched: Movie[];
+}
+
 export interface Movie {
 
     id: number;

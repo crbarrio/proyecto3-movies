@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { Observable, tap } from 'rxjs';
-import { MovieDetails, MovieResponse } from '../interfaces/movie.interface';
+import { MovieDetails, MovieResponse, UserMovieLists } from '../interfaces/movie.interface';
 import { MovieUserPatch, MovieUserState, MovieWithUserState } from '../interfaces/movie-user.interface';
 import { TMDBPerson } from '../interfaces/person.interface';
 
@@ -98,6 +98,25 @@ export class MovieService {
     );
   }
 
+  getUserMovieLists(): Observable<UserMovieLists> {
+    return this.http.get<UserMovieLists>(`${this.ApiUrl}/movies/lists/me`, {
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    }).pipe(
+      tap({
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('Unauthorized request.');
+            return;
+          }
+
+          console.error('An error occurred:', error.message);
+        },
+      })
+    );
+  }
+
   updateMovieUser(movieId: number, changes: MovieUserPatch): Observable<MovieUserState> {
     return this.http.put<MovieUserState>(`${this.ApiUrl}/movies/${movieId}`, changes);
   }
@@ -117,6 +136,14 @@ export class MovieService {
 
   patchMovieCollection<T extends MovieWithUserState>(movies: T[], movieUser: MovieUserState): T[] {
     return movies.map((movie) => this.patchMovie(movie, movieUser));
+  }
+
+  patchMovieLists(lists: UserMovieLists, movieUser: MovieUserState): UserMovieLists {
+    return {
+      averageScore: lists.averageScore,
+      favorites: this.patchMovieCollection(lists.favorites, movieUser),
+      watched: this.patchMovieCollection(lists.watched, movieUser),
+    };
   }
 
 }
