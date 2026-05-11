@@ -84,7 +84,11 @@ Referencia de diseno:
 
 
 ## Calidad
-- [ ] Revisar accesibilidad.
+- [X] Revisar accesibilidad.
+  - [X] Añadir label accesible al buscador; ahora depende solo del placeholder.
+  - [X] Hacer operable con teclado la apertura de detalle de personas; la card actual funciona solo con click.
+  - [X] Exponer estado accesible en filtros de géneros y botones expandir/colapsar.
+  - [X] Anunciar estados dinámicos de carga, error y vacío con regiones live/status.
 
 
 ## Extras

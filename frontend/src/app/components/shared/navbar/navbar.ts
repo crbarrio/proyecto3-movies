@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -11,6 +11,7 @@ import { AuthService } from '../../../services/auth.service';
 export class Navbar {
   authService = inject(AuthService);
   isMobileMenuOpen = signal(false);
+  private router = inject(Router);
 
   toggleMobileMenu() {
     this.isMobileMenuOpen.update((open) => !open);
@@ -21,7 +22,9 @@ export class Navbar {
   }
 
   logout() {
+    this.router.navigate(['/']);
     this.closeMobileMenu();
     this.authService.logout();
+    
   }
 }

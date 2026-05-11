@@ -1,26 +1,34 @@
-<div class="genre-selector">
-  <button
-    (click)="selectGenre(null)"
-    class="genre-button"
-    [class.genre-button--active]="selectedGenre() === null"
-    [class.genre-button--inactive]="selectedGenre() !== null">
-    All
-  </button>
-
-  @for (genre of visibleGenres(); track genre.id) {
+<div class="genre-selector" role="group" aria-label="Filter movies by genre">
+  <div id="genre-selector-options" class="genre-selector__options">
     <button
-      (click)="selectGenre(genre.id)"
+      type="button"
+      (click)="selectGenre(null)"
       class="genre-button"
-      [class.genre-button--active]="selectedGenre() === genre.id"
-      [class.genre-button--inactive]="selectedGenre() !== genre.id">
-      {{ genre.name }}
+      [attr.aria-pressed]="selectedGenre() === null"
+      [class.genre-button--active]="selectedGenre() === null"
+      [class.genre-button--inactive]="selectedGenre() !== null">
+      All
     </button>
-  }
+
+    @for (genre of visibleGenres(); track genre.id) {
+      <button
+        type="button"
+        (click)="selectGenre(genre.id)"
+        class="genre-button"
+        [attr.aria-pressed]="selectedGenre() === genre.id"
+        [class.genre-button--active]="selectedGenre() === genre.id"
+        [class.genre-button--inactive]="selectedGenre() !== genre.id">
+        {{ genre.name }}
+      </button>
+    }
+  </div>
 
   @if (hasHiddenGenres) {
     <button
       type="button"
       (click)="toggleExpanded()"
+      [attr.aria-controls]="'genre-selector-options'"
+      [attr.aria-expanded]="isExpanded()"
       class="genre-button genre-button--toggle">
       {{ isExpanded() ? 'Show less' : 'Show more' }}
     </button>

@@ -4,6 +4,10 @@
     @apply flex flex-wrap justify-center gap-3 w-full;
 }
 
+.genre-selector__options {
+    @apply flex flex-wrap justify-center gap-3;
+}
+
 .genre-button {
     @apply rounded-full px-6 py-2 text-sm leading-5 font-semibold tracking-wide transition-colors;
 }
