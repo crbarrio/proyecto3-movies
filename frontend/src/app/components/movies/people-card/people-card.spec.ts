@@ -2,6 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PeopleCard } from './people-card';
 
+const castMember = {
+  id: '1',
+  name: 'Test person',
+  character: 'Lead',
+};
+
 describe('PeopleCard', () => {
   let component: PeopleCard;
   let fixture: ComponentFixture<PeopleCard>;
@@ -12,7 +18,9 @@ describe('PeopleCard', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(PeopleCard);
+    fixture.componentRef.setInput('castMember', castMember);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

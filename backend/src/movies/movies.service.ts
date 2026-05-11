@@ -81,10 +81,22 @@ export class MoviesService {
         };
     }
 
-    async getPersonById(personId: number): Promise<Person> {
+    async getPersonById(personId: number, userId: number | null): Promise<Person> {
         const personDetails = await this.tmdbService.getPersonById(personId) as TMDBPersonDetails;
+        const person = PersonDetailsMapper.mapTMDBPersonDetailsToPerson(personDetails);
+        const movieMetadata = await this.getMovieMetadataByIds(
+            userId,
+            person.filmography.map((movie) => movie.id),
+        );
 
-        return PersonDetailsMapper.mapTMDBPersonDetailsToPerson(personDetails);
+        return {
+            ...person,
+            filmography: this.enrichMovies(
+                person.filmography,
+                movieMetadata,
+                userId !== null,
+            ),
+        };
     }
 
     async findMoviesByUserId(userId: number): Promise<MovieUser[]> {

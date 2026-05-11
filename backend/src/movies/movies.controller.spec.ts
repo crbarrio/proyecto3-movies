@@ -7,6 +7,7 @@ import { MoviesService } from './movies.service';
 type AuthenticatedMoviesRequest = Parameters<MoviesController['findMoviesByUserId']>[0];
 type AuthenticatedMovieListsRequest = Parameters<MoviesController['getUserMovieLists']>[0];
 type OptionalTrendingRequest = Parameters<MoviesController['getTrendingMovies']>[2];
+type OptionalPersonRequest = Parameters<MoviesController['getPersonById']>[1];
 
 describe('MoviesController', () => {
   let controller: MoviesController;
@@ -128,12 +129,15 @@ describe('MoviesController', () => {
       name: 'Actor',
       filmography: [],
     };
+    const request: OptionalPersonRequest = {
+      user: { sub: 1, name: 'Test User 1' },
+    } as OptionalPersonRequest;
 
     moviesService.getPersonById.mockResolvedValue(expectedPerson);
 
-    const result = await controller.getPersonById(31);
+    const result = await controller.getPersonById(31, request);
 
-    expect(moviesService.getPersonById).toHaveBeenCalledWith(31);
+    expect(moviesService.getPersonById).toHaveBeenCalledWith(31, 1);
     expect(result).toEqual(expectedPerson);
   });
 

@@ -12,7 +12,9 @@ describe('MovieList', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MovieList);
+    fixture.componentRef.setInput('movies', []);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

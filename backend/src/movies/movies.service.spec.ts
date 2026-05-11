@@ -69,7 +69,7 @@ describe('MoviesService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should return all person movies using the incoming TMDB order', async () => {
+  it('should return all person movies using the incoming TMDB order and user average scores', async () => {
     const personDetails = {
       adult: false,
       also_known_as: [],
@@ -99,11 +99,26 @@ describe('MoviesService', () => {
       profile_path: '/profile.jpg',
     } satisfies TMDBPersonDetails;
 
+    prisma.movieUser.groupBy.mockResolvedValue([
+      { movieId: 2, _avg: { score: 8.75 } },
+      { movieId: 4, _avg: { score: 6 } },
+    ]);
+
     tmdbService.getPersonById.mockResolvedValue(personDetails);
 
-    const result = await service.getPersonById(31);
+    const result = await service.getPersonById(31, null);
 
     expect(tmdbService.getPersonById).toHaveBeenCalledWith(31);
+    expect(prisma.movieUser.groupBy).toHaveBeenCalledWith({
+      by: ['movieId'],
+      where: {
+        movieId: { in: [1, 2, 3, 4, 5, 6, 7] },
+        score: { not: null },
+      },
+      _avg: {
+        score: true,
+      },
+    });
     expect(result.filmography).toHaveLength(7);
     expect(result.filmography.map(({ id }) => id)).toEqual([1, 2, 3, 4, 5, 6, 7]);
     expect(result.filmography[1]).toEqual({
@@ -113,7 +128,16 @@ describe('MoviesService', () => {
       genres: [18],
       overview: 'Overview 2',
       posterPath: '/second.jpg',
-      averageScore: 6.2,
+      averageScore: 8.8,
+    });
+    expect(result.filmography[3]).toEqual({
+      id: 4,
+      title: 'Fourth',
+      releaseDate: '',
+      genres: [35],
+      overview: 'Overview 4',
+      posterPath: null,
+      averageScore: 6,
     });
   });
 

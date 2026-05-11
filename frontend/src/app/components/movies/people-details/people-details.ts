@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Person } from '../../../interfaces/person.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../../services/movie.service';
@@ -7,6 +7,8 @@ import { DatePipe } from '@angular/common';
 import { environment } from '../../../../environments/environment';
 import ModalShell from "../../shared/modal-shell/modal-shell";
 import { MovieCard } from '../movie-card/movie-card';
+import { Movie } from '../../../interfaces/movie.interface';
+import { MovieUserChange } from '../../../interfaces/movie-user.interface';
 
 @Component({
   selector: 'app-people-details',
@@ -20,6 +22,7 @@ export class PeopleDetails {
   readonly isBiographyExpanded = signal(false);
   readonly filmographyPageSize = 6;
   readonly visibleFilmographyCount = signal(this.filmographyPageSize);
+  readonly filmographyState = signal<Movie[]>([]);
   private movieService = inject(MovieService);
   private dialogRef = inject(DialogRef<PeopleDetails>);
 
@@ -31,22 +34,21 @@ export class PeopleDetails {
     stream: ({ params }) => this.movieService.getPersonById(params.personId),
   });
 
-  readonly visibleFilmography = computed(() => {
-    if (!this.personDetailsResource.hasValue()) {
-      return [];
-    }
+  constructor() {
+    effect(() => {
+      const person = this.personDetailsResource.value();
 
-    return this.personDetailsResource
-      .value()
-      .filmography.slice(0, this.visibleFilmographyCount());
+      this.filmographyState.set(person?.filmography ?? []);
+      this.visibleFilmographyCount.set(this.filmographyPageSize);
+    });
+  }
+
+  readonly visibleFilmography = computed(() => {
+    return this.filmographyState().slice(0, this.visibleFilmographyCount());
   });
 
   readonly hasMoreFilmography = computed(() => {
-    if (!this.personDetailsResource.hasValue()) {
-      return false;
-    }
-
-    return this.visibleFilmographyCount() < this.personDetailsResource.value().filmography.length;
+    return this.visibleFilmographyCount() < this.filmographyState().length;
   });
 
   get modalTitle() {
@@ -71,6 +73,19 @@ export class PeopleDetails {
 
   showMoreFilmography() {
     this.visibleFilmographyCount.update((value) => value + this.filmographyPageSize);
+  }
+
+  onMovieUserChanged(event: MovieUserChange) {
+    this.movieService.updateMovieUser(event.movieId, event.changes).subscribe({
+      next: (movieUser) => {
+        this.filmographyState.update((movies) =>
+          this.movieService.patchMovieCollection(movies, movieUser),
+        );
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
   getProfileImageUrl(profilePath: string | null | undefined) {

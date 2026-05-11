@@ -58,11 +58,13 @@ export class MoviesController {
     }
 
     @HttpCode(HttpStatus.OK)
+    @UseGuards(OptionalAuthGuard)
     @Get('people/:personId')
     async getPersonById(
         @Param('personId', ParseIntPipe) personId: number,
+        @Req() request?: AuthenticatedRequest,
     ) {
-        return this.moviesService.getPersonById(personId);
+        return this.moviesService.getPersonById(personId, request?.user?.sub ?? null);
     }
 
     @HttpCode(HttpStatus.OK)
