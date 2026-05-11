@@ -1,5 +1,5 @@
 export const environment = {
     production: true,
     tmdbImageBaseUrl: 'https://image.tmdb.org/t/p/w500',
-    ApiUrl: 'http://localhost:3000',
+    ApiUrl: '/api',
 };

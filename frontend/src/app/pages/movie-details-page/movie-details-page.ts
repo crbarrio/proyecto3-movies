@@ -5,22 +5,21 @@ import { MovieService } from '../../services/movie.service';
 import { environment } from '../../../environments/environment';
 import { MovieDetails } from '../../interfaces/movie.interface';
 import { MovieUserChange } from '../../interfaces/movie-user.interface';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MovieCard } from "../../components/movies/movie-card/movie-card";
 import { PeopleCard } from "../../components/movies/people-card/people-card";
 import { DetailsHero } from "../../components/movies/details-hero/details-hero";
+import TrailersSection from '../../components/movies/trailers-section/trailers-section';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie-details-page',
-  imports: [MovieCard, PeopleCard, DetailsHero],
+  imports: [MovieCard, PeopleCard, DetailsHero, TrailersSection],
   templateUrl: './movie-details-page.html',
 })
 export default class MovieDetailsPage {
 
   private location = inject(Location);
   private movieService = inject(MovieService);
-  private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   
@@ -49,13 +48,10 @@ export default class MovieDetailsPage {
     this.location.back();
   }
 
-  getTrailerEmbedUrl(key: string) {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${key}`);
-  }
-
   openPerson(personId: string) {
     this.router.navigate([{ outlets: { modal: ['person', personId] } }], {
       relativeTo: this.route.parent,
+      state: { closeModalWithHistoryBack: true },
     });
   }
 

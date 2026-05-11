@@ -1,0 +1,65 @@
+<section class="space-y-4">
+  <div>
+    <h2 class="text-2xl font-bold text-white">Videos</h2>
+    <p class="text-sm text-neutral-400">Available trailers from YouTube.</p>
+  </div>
+
+  @if (trailers().length) {
+    @if (selectedTrailerKey(); as activeTrailerKey) {
+      <article class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/70">
+        <div class="flex items-center justify-between border-b border-neutral-800 px-4 py-3">
+          <p class="text-sm font-semibold text-white">Now playing</p>
+          <button
+            type="button"
+            class="text-sm font-semibold text-neutral-400 transition hover:cursor-pointer hover:text-white"
+            (click)="closeTrailer()">
+            Close trailer
+          </button>
+        </div>
+
+        <div class="aspect-video bg-black">
+          <iframe
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            class="h-full w-full"
+            referrerpolicy="strict-origin-when-cross-origin"
+            [src]="getTrailerEmbedUrl(activeTrailerKey)"
+            title="{{ movieTitle() }} trailer">
+          </iframe>
+        </div>
+      </article>
+    }
+
+    <div class="grid gap-4 lg:grid-cols-2">
+      @for (trailer of trailers(); track trailer.key) {
+        <button
+          type="button"
+          class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/70 text-left transition hover:cursor-pointer hover:border-neutral-700"
+          (click)="openTrailer(trailer.key)">
+          <div class="relative aspect-video bg-black">
+            <img
+              class="h-full w-full object-cover"
+              [src]="getTrailerThumbnailUrl(trailer.key)"
+              alt="{{ movieTitle() }} trailer thumbnail" />
+            <div class="absolute inset-0 flex items-center justify-center bg-black/35">
+              <span class="grid h-16 w-16 place-items-center rounded-full bg-white/90 shadow-lg">
+                <span class="material-symbols-outlined leading-none text-4xl text-indigo-500">
+                  play_arrow
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div class="space-y-1 px-4 py-3">
+            <p class="text-sm font-semibold text-white">{{ trailer.type || 'Trailer' }}</p>
+            <p class="text-xs uppercase tracking-[0.2em] text-neutral-400">{{ trailer.site || 'YouTube' }}</p>
+          </div>
+        </button>
+      }
+    </div>
+  } @else {
+    <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500" role="status" aria-live="polite">
+      No trailers available.
+    </div>
+  }
+</section>

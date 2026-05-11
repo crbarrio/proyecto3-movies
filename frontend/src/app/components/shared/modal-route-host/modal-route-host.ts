@@ -1,6 +1,7 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 import { Component, effect, inject, input } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PeopleDetails } from '../../movies/people-details/people-details';
 import AuthModal from '../auth-modal/auth-modal';
@@ -13,6 +14,7 @@ type ModalMode = 'login' | 'register' | 'person-details';
 })
 export default class ModalRouteHost {
   private dialog = inject(Dialog);
+  private location = inject(Location);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -29,7 +31,6 @@ export default class ModalRouteHost {
 
     if (mode === 'person-details') {
       if (!personId) {
-        queueMicrotask(() => this.closeModalRoute());
         return;
       }
 
@@ -70,9 +71,19 @@ export default class ModalRouteHost {
   }
 
   private closeModalRoute() {
+    if (this.shouldCloseWithHistoryBack()) {
+      this.location.back();
+      return;
+    }
+
     this.router.navigate([{ outlets: { modal: null } }], {
       relativeTo: this.route.parent,
       replaceUrl: true,
     });
+  }
+
+  private shouldCloseWithHistoryBack() {
+    const state = this.location.getState() as { closeModalWithHistoryBack?: unknown } | null;
+    return state?.closeModalWithHistoryBack === true;
   }
 }

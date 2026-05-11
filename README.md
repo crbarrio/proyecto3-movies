@@ -7,6 +7,10 @@ El repositorio contiene dos aplicaciones principales:
 - `frontend/`: cliente Angular.
 - `backend/`: API NestJS.
 
+## Demo
+
+- URL publica: `https://movies.crbarrio.es`
+
 ## Que hace la aplicacion
 
 ### Funcionalidades principales

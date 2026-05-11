@@ -44,35 +44,7 @@
       }
     </section>
 
-    <section class="space-y-4">
-      <div>
-        <h2 class="text-2xl font-bold text-white">Videos</h2>
-        <p class="text-sm text-neutral-400">Available trailers from YouTube.</p>
-      </div>
-
-      @if (trailers.length) {
-        <div class="grid gap-4 lg:grid-cols-2">
-          @for (trailer of trailers; track trailer.key) {
-            <article class="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/70">
-              <div class="aspect-video bg-black">
-                <iframe
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen
-                  class="h-full w-full"
-                  referrerpolicy="strict-origin-when-cross-origin"
-                  [src]="getTrailerEmbedUrl(trailer.key)"
-                  title="{{ movie.title }} trailer">
-                </iframe>
-              </div>
-            </article>
-          }
-        </div>
-      } @else {
-        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500" role="status" aria-live="polite">
-          No trailers available.
-        </div>
-      }
-    </section>
+    <app-trailers-section [movieTitle]="movie.title" [trailers]="trailers"></app-trailers-section>
 
     <section class="space-y-4">
       <div>
