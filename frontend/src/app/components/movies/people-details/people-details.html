@@ -11,7 +11,7 @@
   } @else if (personDetailsResource.hasValue()) {
     @let person = personDetailsResource.value();
 
-    <div class="flex min-h-0 flex-1 flex-col gap-8 p-6 md:p-8">
+    <div class="flex min-h-0 flex-col gap-8 px-6 pt-6 pb-10 md:px-8 md:pt-8 md:pb-10">
       <section class="grid shrink-0 gap-6 md:grid-cols-[180px_1fr] md:items-start">
         <div class="overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/70 shadow-inner">
           @if (getProfileImageUrl(person.profile_path); as profileImageUrl) {
@@ -46,14 +46,16 @@
         </div>
       </section>
 
-      <section class="flex min-h-0 flex-1 flex-col rounded-2xl border border-white/10 bg-zinc-950/40 p-6">
+      <section class="rounded-2xl border border-white/10 bg-zinc-950/40 p-6 md:flex md:min-h-0 md:flex-col">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Biography</p>
-        <div class="scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-hover:scrollbar-thumb-zinc-600 mt-4 min-h-0 overflow-y-auto pr-2">
+        <div class="mt-4 pr-2 pb-4 md:min-h-0 md:flex-1 md:overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-hover:scrollbar-thumb-zinc-600">
           <p class="text-sm leading-8 text-slate-300">
             {{ person.biography || 'No biography available.' }}
           </p>
         </div>
       </section>
+
+      <div class="h-6 shrink-0 md:hidden" aria-hidden="true"></div>
     </div>
   }
 </app-modal-shell>
