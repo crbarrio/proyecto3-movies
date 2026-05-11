@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input, output } from '@angular/core';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { MovieScore } from '../movie-score/movie-score';
 import { MovieUserActions } from '../movie-user-actions/movie-user-actions';
 import { MovieDetails } from '../../../interfaces/movie.interface';

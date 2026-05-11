@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { MovieDetails, MovieResponse, UserMovieLists } from '../interfaces/movie.interface';
 import { MovieUserPatch, MovieUserState, MovieWithUserState } from '../interfaces/movie-user.interface';

@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { TMDB_GENRES_BY_ID } from '../../../catalogs/tmdb-genres';
 import { MovieUserActions } from '../movie-user-actions/movie-user-actions';
 import { Movie } from '../../../interfaces/movie.interface';
@@ -19,6 +19,7 @@ export class MovieCard {
   baseImageUrl = environment.tmdbImageBaseUrl;
   movie = input.required<Movie>();
 
+  cardSelected = output<void>();
   movieUserChanged = output<MovieUserChange>();
 
   genreNames = computed(() =>
@@ -30,5 +31,11 @@ export class MovieCard {
 
   onMovieUserChanged(event: MovieUserChange) {
     this.movieUserChanged.emit(event);
+  }
+
+  onCardSelected() {
+    setTimeout(() => {
+      this.cardSelected.emit();
+    });
   }
 }

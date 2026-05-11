@@ -3,6 +3,7 @@
         <a
             class="absolute inset-0 block"
             [attr.aria-label]="'Open details for ' + movie().title"
+            (click)="onCardSelected()"
             [routerLink]="['/movie', movie().id]">
             @if (movie().posterPath) {
             <img alt="{{ movie().title }} Movie Poster"
@@ -35,6 +36,9 @@
             }
         </div>
     </div>
-    <h3 class="text-indigo-500 leading-4 font-bold tracking-wider uppercase" [routerLink]="['/movie', movie().id]">{{movie().title}}</h3>
+    <h3
+        class="text-indigo-500 leading-4 font-bold tracking-wider uppercase"
+        (click)="onCardSelected()"
+        [routerLink]="['/movie', movie().id]">{{movie().title}}</h3>
     <span class="font-h3 text-h3 leading-tight drop-shadow-lg">{{ genreNames().join(', ') }}</span>
 </div>

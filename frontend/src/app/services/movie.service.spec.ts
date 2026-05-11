@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 
 import { MovieService } from './movie.service';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 
 describe('MovieService', () => {
   let service: MovieService;
