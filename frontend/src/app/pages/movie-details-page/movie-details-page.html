@@ -1,7 +1,7 @@
 @if (movieResource.error()) {
-  <div class="text-red-500 text-center mt-4">Failed to load. Please try again later.</div>
+  <div class="text-red-500 text-center mt-4" role="alert">Failed to load. Please try again later.</div>
 } @else if (movieResource.isLoading()) {
-  <div class="text-gray-500 text-center mt-4">Loading details...</div>
+  <div class="text-gray-500 text-center mt-4" role="status" aria-live="polite">Loading details...</div>
 } @else if (movieResource.hasValue()) {
   @let movie = movieDetailsState() ?? movieResource.value();
   @let genreNames = (movie.genres ?? []).map((genre) => genre.name).join(', ');
@@ -38,7 +38,7 @@
           }
         </div>
       } @else {
-        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500" role="status" aria-live="polite">
           No cast information available.
         </div>
       }
@@ -68,7 +68,7 @@
           }
         </div>
       } @else {
-        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500" role="status" aria-live="polite">
           No trailers available.
         </div>
       }
@@ -87,7 +87,7 @@
           }
         </div>
       } @else {
-        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500">
+        <div class="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/40 p-6 text-sm text-neutral-500" role="status" aria-live="polite">
           No similar movies available.
         </div>
       }

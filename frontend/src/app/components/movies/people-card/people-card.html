@@ -1,6 +1,8 @@
-<article
-    class="flex cursor-pointer gap-4 rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4"
-    (click)="selectPerson()">
+<button
+    type="button"
+    class="flex w-full cursor-pointer gap-4 rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+    (click)="selectPerson()"
+    [attr.aria-label]="'Open details for ' + castMember().name">
     @if (castMember().profilePath) {
     <img alt="{{ castMember().name }} profile photo" class="h-20 w-20 rounded-xl object-cover"
         src="{{ baseImageUrl }}{{ castMember().profilePath }}" />
@@ -15,4 +17,4 @@
         <h3 class="truncate text-lg font-semibold text-white">{{ castMember().name }}</h3>
         <p class="mt-1 text-sm text-indigo-400">{{ castMember().character || 'Character not available' }}</p>
     </div>
-</article>
+</button>

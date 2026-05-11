@@ -17,9 +17,9 @@
 </section>
 
 @if (movieResource.error()) {
-  <div class="text-red-500 text-center mt-4">Failed to load movies. Please try again later.</div>
+  <div class="text-red-500 text-center mt-4" role="alert">Failed to load movies. Please try again later.</div>
 } @else if (movieResource.isLoading() && !loadedMovies().length) {
-  <div class="text-gray-500 text-center mt-4">Loading movies...</div>
+  <div class="text-gray-500 text-center mt-4" role="status" aria-live="polite">Loading movies...</div>
 } @else {
   <app-movie-list
     title="Trending Now"
@@ -29,4 +29,10 @@
     (nextPage)="loadNextPage()"
     (movieUserChanged)="onMovieUserChanged($event)">
   </app-movie-list>
+
+  @if (!movieResource.isLoading() && !movieResource.error() && loadedMovies().length === 0) {
+    <div class="text-gray-400 text-center mt-4" role="status" aria-live="polite">
+      No movies found for the current search.
+    </div>
+  }
 }

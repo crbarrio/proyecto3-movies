@@ -22,11 +22,11 @@
 
 <section class="w-full mt-8">
     @if (isLoadingMovieLists() && favoriteMovies().length === 0 && watchedMovies().length === 0) {
-
+        <p class="text-gray-400 text-center" role="status" aria-live="polite">Loading your movie lists...</p>
     } @else {
         <div>
             @if (favoriteMovies().length === 0) {
-                <p class="text-gray-400 text-center">You haven't marked any movies as favorite yet.</p>
+                <p class="text-gray-400 text-center" role="status" aria-live="polite">You haven't marked any movies as favorite yet.</p>
             } @else {
                 <app-movie-list
                     title="Favorite Movies"
@@ -43,11 +43,11 @@
 <section class="w-full mt-8">
 
     @if (isLoadingMovieLists() && favoriteMovies().length === 0 && watchedMovies().length === 0) {
-
+        <p class="text-gray-400 text-center" role="status" aria-live="polite">Loading your movie lists...</p>
     } @else {
         <div>
             @if (watchedMovies().length === 0) {
-                <p class="text-gray-400 text-center">You haven't marked any movies as watched yet.</p>
+                <p class="text-gray-400 text-center" role="status" aria-live="polite">You haven't marked any movies as watched yet.</p>
             } @else {
                 <app-movie-list
                     title="Watched Movies"
