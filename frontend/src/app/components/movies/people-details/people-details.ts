@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { Person } from '../../../interfaces/person.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../../services/movie.service';
@@ -15,6 +15,7 @@ import { MovieUserChange } from '../../../interfaces/movie-user.interface';
   standalone: true,
   imports: [DatePipe, ModalShell, MovieCard],
   templateUrl: './people-details.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PeopleDetails {
   data = inject<{ personId: string }>(DIALOG_DATA);

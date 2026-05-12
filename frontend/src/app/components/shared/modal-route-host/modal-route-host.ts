@@ -1,6 +1,6 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { ComponentType } from '@angular/cdk/portal';
-import { Component, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PeopleDetails } from '../../movies/people-details/people-details';
@@ -11,6 +11,7 @@ type ModalMode = 'login' | 'register' | 'person-details';
 @Component({
   selector: 'app-modal-route-host',
   template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ModalRouteHost {
   private dialog = inject(Dialog);

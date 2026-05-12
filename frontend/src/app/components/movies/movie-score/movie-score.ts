@@ -1,9 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MovieUserChange, MovieScoreTarget } from '../../../interfaces/movie-user.interface';
 
 @Component({
   selector: 'app-movie-score',
   templateUrl: './movie-score.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieScore {
   movie = input.required<MovieScoreTarget>();

@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieList } from '../../components/movies/movie-list/movie-list';
 import { UserMovieLists } from '../../interfaces/movie.interface';
@@ -12,6 +12,7 @@ import { of } from 'rxjs';
   imports: [MovieList],
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProfilePage {
   private authService = inject(AuthService);

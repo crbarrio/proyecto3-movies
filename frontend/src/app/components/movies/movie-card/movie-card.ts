@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { TMDB_GENRES_BY_ID } from '../../../catalogs/tmdb-genres';
@@ -11,6 +11,7 @@ import { AuthService } from '../../../services/auth.service';
   selector: 'app-movie-card',
   imports: [RouterLink, MovieUserActions],
   templateUrl: './movie-card.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieCard {
   authService = inject(AuthService);

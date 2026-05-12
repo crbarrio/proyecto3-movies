@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
 import { Location } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieService } from '../../services/movie.service';
@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-movie-details-page',
   imports: [MovieCard, PeopleCard, DetailsHero, TrailersSection],
   templateUrl: './movie-details-page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class MovieDetailsPage {
 

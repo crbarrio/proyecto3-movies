@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { email, form, FormField, minLength, required, submit } from '@angular/forms/signals';
 
 interface RegisterFormData {
@@ -12,6 +12,7 @@ interface RegisterFormData {
   imports: [FormField],
   templateUrl: './register-form.html',
   styleUrl: './register-form.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterForm {
   isSubmitting = input(false);

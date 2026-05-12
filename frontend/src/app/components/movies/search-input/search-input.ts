@@ -1,4 +1,4 @@
-import { Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { Debounce } from './search-input.directive';
 
 
@@ -6,6 +6,7 @@ import { Debounce } from './search-input.directive';
   selector: 'app-search-input',
   imports: [Debounce],
   templateUrl: './search-input.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchInput {
 

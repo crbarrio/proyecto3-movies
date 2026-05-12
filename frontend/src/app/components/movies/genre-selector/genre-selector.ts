@@ -1,4 +1,4 @@
-import { Component, computed, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, model, signal } from '@angular/core';
 import { TMDB_GENRES } from '../../../catalogs/tmdb-genres';
 
 
@@ -7,6 +7,7 @@ import { TMDB_GENRES } from '../../../catalogs/tmdb-genres';
   imports: [],
   templateUrl: './genre-selector.html',
   styleUrl: './genre-selector.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenreSelector {
   private readonly collapsedGenreCount = 6;

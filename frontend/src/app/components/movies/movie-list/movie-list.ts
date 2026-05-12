@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MovieCard } from '../movie-card/movie-card';
 import { Movie } from '../../../interfaces/movie.interface';
 import { MovieUserChange } from '../../../interfaces/movie-user.interface';
@@ -7,6 +7,7 @@ import { MovieUserChange } from '../../../interfaces/movie-user.interface';
   selector: 'app-movie-list',
   imports: [MovieCard],
   templateUrl: './movie-list.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieList {
   movies = input.required<Movie[]>();

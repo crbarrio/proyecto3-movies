@@ -1,5 +1,5 @@
 import { DomSanitizer } from '@angular/platform-browser';
-import { Component, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { MovieDetails } from '../../../interfaces/movie.interface';
 
 type Trailer = NonNullable<NonNullable<MovieDetails['videos']>['results']>[number];
@@ -8,6 +8,7 @@ type Trailer = NonNullable<NonNullable<MovieDetails['videos']>['results']>[numbe
   selector: 'app-trailers-section',
   standalone: true,
   templateUrl: './trailers-section.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TrailersSection {
   private sanitizer = inject(DomSanitizer);

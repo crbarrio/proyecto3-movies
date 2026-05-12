@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { email, form, FormField, minLength, required, submit } from '@angular/forms/signals';
 
 interface LoginFormData {
@@ -10,6 +10,7 @@ interface LoginFormData {
   selector: 'app-login-form',
   imports: [FormField],
   templateUrl: './login-form.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginForm {
   isSubmitting = input(false);

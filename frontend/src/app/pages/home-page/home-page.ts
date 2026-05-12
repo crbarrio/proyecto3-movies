@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MovieList } from '../../components/movies/movie-list/movie-list';
 import { MovieUserChange } from '../../interfaces/movie-user.interface';
@@ -12,6 +12,7 @@ import { Movie, MovieResponse } from '../../interfaces/movie.interface';
   imports: [MovieList, GenreSelector, SearchInput],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class HomePage {
   private movieService = inject(MovieService);

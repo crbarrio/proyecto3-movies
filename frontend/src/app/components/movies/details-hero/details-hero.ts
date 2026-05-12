@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { MovieScore } from '../movie-score/movie-score';
 import { MovieUserActions } from '../movie-user-actions/movie-user-actions';
@@ -12,6 +12,7 @@ import { AuthService } from '../../../services/auth.service';
   imports: [DatePipe, MovieScore, MovieUserActions],
   templateUrl: './details-hero.html',
   styleUrl: './details-hero.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailsHero {
 
